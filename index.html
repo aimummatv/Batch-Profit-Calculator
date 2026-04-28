@@ -228,25 +228,34 @@ body.dark .target-mrp-pill.below { background: #450a0a33; }
 /* ── TABLE ── */
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 0; }
-col.c-name  { width: 22%; }
-col.c-pct   { width: 9%; }
-col.c-qty   { width: 15%; }
-col.c-price { width: 22%; }
-col.c-cost  { width: 18%; }
+col.c-name  { width: 24%; }
+col.c-pct   { width: 10%; }
+col.c-qty   { width: 16%; }
+col.c-price { width: 20%; }
+col.c-cost  { width: 22%; }
 col.c-del   { width: 8%; }
 thead tr { border-bottom: 2px solid var(--border); }
-th { padding: 7px 4px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--sub); text-align: right; }
+th {
+  padding: 8px 6px; font-size: 11px; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--sub); text-align: right;
+  border-right: 1px solid var(--border);
+}
 th:first-child { text-align: left; }
+th:last-child { border-right: none; }
 tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
 tbody tr:last-child { border-bottom: none; }
 tbody tr:hover { background: var(--bg); }
-td { padding: 5px 4px; text-align: right; vertical-align: middle; font-size: 14px; }
+td {
+  padding: 8px 6px; text-align: right; vertical-align: middle; font-size: 14px;
+  border-right: 1px solid var(--border);
+}
 td:first-child { text-align: left; }
+td:last-child { border-right: none; }
 .nameInput { width: 100%; border: none; background: transparent; font-family: var(--font); font-size: 14px; font-weight: 600; color: var(--text); outline: none; padding: 0; min-width: 0; }
 .nameInput:focus { color: var(--accent); }
 .numInput { width: 100%; border: none; background: transparent; font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text); outline: none; text-align: right; padding: 0; min-width: 0; }
 .numInput:focus { color: var(--accent); }
-.qty-text  { font-family: var(--mono); font-size: 13px; color: var(--sub); }
+.qty-text  { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text); }
 .cost-text { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--text); }
 .del-btn { background: none; border: none; color: #ef4444; font-size: 16px; cursor: pointer; padding: 2px 4px; border-radius: 6px; transition: background .15s; display: block; margin: auto; }
 .del-btn:hover { background: #fee2e2; }
