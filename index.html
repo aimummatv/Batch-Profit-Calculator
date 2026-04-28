@@ -796,7 +796,7 @@ function calc() {
   }
 
   // ── Summary ──
-  el("effBatch").innerText    = fmt(eff)+" kg";
+  el("effBatch").innerText    = fmtD(eff, 2)+" kg";
   el("packs").innerText       = fmt(packs);
   el("revenue").innerText     = "₹"+fmt(rev);
   el("totalProfit").innerText = "₹"+fmt(profit);
@@ -942,7 +942,7 @@ function exportPDF() {
   <thead><tr><th>Category</th><th>Amount</th><th>Per Pack</th></tr></thead>
   <tbody>
     <tr><td>🔴 Raw Material</td><td>₹${fmt(c.raw)}</td><td>₹${c.packs>0?fmtD(c.raw/c.packs,2):"—"}</td></tr>
-    <tr><td>🟣 Packaging</td><td>₹${fmt(c.pkCost)}</td><td>₹${v("pack")}</td></tr>
+    <tr><td>🟣 Packaging</td><td>₹${fmt(c.pkCost)}</td><td>₹${fmtD(v("pack"), 2)}</td></tr>
     <tr><td>🟢 Overhead (Labour+Elec+Misc)</td><td>₹${fmt(c.ohCost)}</td><td>₹${fmtD(v("labour")+v("electricity")+v("misc"),2)}</td></tr>
   </tbody>
   <tfoot><tr class="total-row"><td><strong>Total Production Cost</strong></td><td>₹${fmt(c.total)}</td><td>₹${c.packs>0?fmtD(c.total/c.packs,2):"—"} / pack</td></tr></tfoot>
@@ -951,7 +951,7 @@ function exportPDF() {
 
 <h2>Summary</h2>
 <div class="summary-row">
-  <div class="pill blue"><div class="pill-label">Eff. Batch</div><div class="pill-val">${fmt(c.eff)} kg</div></div>
+  <div class="pill blue"><div class="pill-label">Eff. Batch</div><div class="pill-val">${fmtD(c.eff, 2)} kg</div></div>
   <div class="pill violet"><div class="pill-label">Total Packs</div><div class="pill-val">${fmt(c.packs)}</div></div>
   <div class="pill green"><div class="pill-label">Revenue</div><div class="pill-val">₹${fmt(c.rev)}</div></div>
   <div class="pill orange"><div class="pill-label">Net Profit</div><div class="pill-val">₹${fmt(c.profit)}</div></div>
