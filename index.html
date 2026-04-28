@@ -40,7 +40,7 @@ body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--text);
-  font-size: 16px;
+  font-size: 18px;
   padding: 12px 14px 40px;
   min-height: 100vh;
   transition: background .25s, color .25s;
@@ -71,7 +71,7 @@ body {
   margin-bottom: 10px; flex-wrap: wrap;
 }
 .profile-select {
-  flex: 1; min-width: 140px; max-width: 260px;
+  flex: 1; min-width: 0; max-width: 260px;
   background: var(--card); border: 1px solid var(--border);
   border-radius: 10px; padding: 8px 12px;
   font-family: var(--font); font-size: 13px; font-weight: 600;
@@ -85,7 +85,7 @@ body {
   font-size: 10px; font-weight: 700; letter-spacing: .08em;
   text-transform: uppercase; color: var(--sub); white-space: nowrap;
 }
-.profile-new-wrap { display: flex; gap: 6px; flex: 1; min-width: 180px; }
+.profile-new-wrap { display: flex; gap: 6px; flex: 1; min-width: 0; width: 100%; }
 .profile-new-input {
   flex: 1; background: var(--bg); border: 1px solid var(--border);
   border-radius: 10px; padding: 7px 10px;
@@ -117,7 +117,7 @@ body.dark #topBar { background: #1a1f30; border: 1px solid var(--border); }
 .kpi { padding: 12px 8px; text-align: center; border-right: 1px solid rgba(255,255,255,.06); }
 .kpi:last-child { border-right: none; }
 .kpi-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.kpi-value { font-family: var(--mono); font-size: 16px; font-weight: 600; color: #fff; line-height: 1.2; }
+.kpi-value { font-family: var(--mono); font-size: 18px; font-weight: 600; color: #fff; line-height: 1.2; }
 .kv-green  { color: #4ade80 !important; }
 .kv-red    { color: #f87171 !important; }
 .kv-yellow { color: #fbbf24 !important; }
@@ -156,13 +156,13 @@ body.dark #topBar { background: #1a1f30; border: 1px solid var(--border); }
 .inputBox.warn-field { border-color: var(--warn) !important; }
 .inputBox.err-field  { border-color: var(--danger) !important; }
 .inputBox label {
-  display: block; font-size: 12px; font-weight: 700;
+  display: block; font-size: 13px; font-weight: 700;
   color: var(--sub); margin-bottom: 3px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .inputBox input {
   width: 100%; border: none; background: transparent;
-  font-family: var(--mono); font-size: 15px; font-weight: 600;
+  font-family: var(--mono); font-size: 17px; font-weight: 600;
   color: var(--text); outline: none; min-width: 0;
 }
 .field-hint {
@@ -227,20 +227,20 @@ body.dark .target-mrp-pill.below { background: #450a0a33; }
 
 /* ── TABLE ── */
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 400px; }
-col.c-name  { width: 108px; }
-col.c-pct   { width: 52px; }
-col.c-qty   { width: 66px; }
-col.c-price { width: 66px; }
-col.c-cost  { width: 82px; }
-col.c-del   { width: 32px; }
+table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 0; }
+col.c-name  { width: 30%; }
+col.c-pct   { width: 12%; }
+col.c-qty   { width: 16%; }
+col.c-price { width: 16%; }
+col.c-cost  { width: 18%; }
+col.c-del   { width: 8%; }
 thead tr { border-bottom: 2px solid var(--border); }
-th { padding: 7px 6px; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--sub); text-align: right; }
+th { padding: 7px 4px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--sub); text-align: right; }
 th:first-child { text-align: left; }
 tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
 tbody tr:last-child { border-bottom: none; }
 tbody tr:hover { background: var(--bg); }
-td { padding: 5px 6px; text-align: right; vertical-align: middle; font-size: 14px; }
+td { padding: 5px 4px; text-align: right; vertical-align: middle; font-size: 14px; }
 td:first-child { text-align: left; }
 .nameInput { width: 100%; border: none; background: transparent; font-family: var(--font); font-size: 14px; font-weight: 600; color: var(--text); outline: none; padding: 0; min-width: 0; }
 .nameInput:focus { color: var(--accent); }
@@ -267,7 +267,7 @@ body.dark .pct-err  { background: #7f1d1d55; color: #f87171; }
 .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 10px; }
 .stat-pill { border-radius: 12px; padding: 12px 12px; display: flex; flex-direction: column; gap: 4px; }
 .stat-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-.stat-val   { font-family: var(--mono); font-size: 17px; font-weight: 700; }
+.stat-val   { font-family: var(--mono); font-size: 19px; font-weight: 700; }
 .sp-blue   { background: #eff6ff; color: #1d4ed8; }
 .sp-violet { background: #f5f3ff; color: #5b21b6; }
 .sp-green  { background: #f0fdf4; color: #15803d; }
@@ -280,7 +280,7 @@ body.dark .sp-orange { background: #7c2d1222; color: #fb923c; }
 .extra-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 10px; }
 .extra-pill { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; transition: background .25s; }
 .extra-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); }
-.extra-val   { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--text); }
+.extra-val   { font-family: var(--mono); font-size: 17px; font-weight: 700; color: var(--text); }
 
 .be-strip { display: flex; align-items: center; justify-content: space-between; background: #0f1117; border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
 body.dark .be-strip { background: #1a1f30; border: 1px solid var(--border); }
@@ -289,7 +289,7 @@ body.dark .be-strip { background: #1a1f30; border: 1px solid var(--border); }
 .be-lbl  { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: rgba(255,255,255,.35); }
 .be-sub  { font-size: 11px; color: rgba(255,255,255,.22); margin-top: 1px; }
 .be-right { text-align: right; }
-.be-val  { font-family: var(--mono); font-size: 20px; font-weight: 700; color: #fff; }
+.be-val  { font-family: var(--mono); font-size: 22px; font-weight: 700; color: #fff; }
 .be-pct  { font-size: 11px; color: rgba(255,255,255,.28); margin-top: 2px; }
 
 .breakdown-grid { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
@@ -328,7 +328,7 @@ body.dark .brow.total { background: #1a1f30; }
   #topBar .kpi:nth-child(3) { border-right: none; }
   #topBar .kpi:nth-child(4) { border-top: 1px solid rgba(255,255,255,.06); }
   #topBar .kpi:nth-child(5) { border-top: 1px solid rgba(255,255,255,.06); border-right: none; }
-  .kpi-value { font-size: 12px; }
+  .kpi-value { font-size: 14px; }
   .inputGrid { grid-template-columns: repeat(3, 1fr); }
   .stat-row  { grid-template-columns: repeat(2, 1fr); }
   .stat-val  { font-size: 15px; }
@@ -339,6 +339,11 @@ body.dark .brow.total { background: #1a1f30; }
   .export-row { grid-template-columns: 1fr; }
   .export-btn { font-size: 13px; padding: 12px; }
   .app-title { font-size: 15px; }
+  /* Profile bar: select full width on top, input+buttons below */
+  .profile-select { max-width: 100%; width: 100%; }
+  .profile-new-wrap { width: 100%; }
+  .profile-new-input { min-width: 0; flex: 1; }
+  .btn-sm { padding: 7px 12px; font-size: 12px; flex-shrink: 0; }
 }
 @media (min-width: 601px) and (max-width: 900px) {
   .inputGrid { grid-template-columns: repeat(5, 1fr); }
@@ -365,11 +370,13 @@ body.dark .brow.total { background: #1a1f30; }
 <div class="card" style="padding:12px 14px; margin-bottom:10px;">
   <div class="card-title" style="margin-bottom:8px;">📁 Profiles <span class="card-title-badge" id="profileCount">1 saved</span></div>
   <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+    <div style="display:flex; gap:8px; align-items:center; width:100%; flex-wrap:wrap;">
     <select class="profile-select" id="profileSelect" onchange="loadProfile(this.value)"></select>
     <div class="profile-new-wrap">
       <input class="profile-new-input" id="profileNameInput" placeholder="New profile name…" maxlength="30">
       <button class="btn-sm" onclick="saveAsProfile()">💾 Save</button>
       <button class="btn-sm danger" onclick="deleteProfile()">🗑</button>
+    </div>
     </div>
   </div>
 </div>
