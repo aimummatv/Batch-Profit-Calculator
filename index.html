@@ -330,6 +330,12 @@ body.dark .brow.total { background: #1a1f30; }
 .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(14px); background: #0f1117; color: #fff; padding: 9px 20px; border-radius: 99px; font-size: 13px; font-weight: 600; opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; z-index: 999; white-space: nowrap; max-width: 90vw; text-align: center; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+#packsTopInput::-webkit-outer-spin-button,
+#packsTopInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
   body { padding: 10px 10px 28px; }
@@ -395,7 +401,10 @@ body.dark .brow.total { background: #1a1f30; }
   <div class="kpi"><div class="kpi-label">Cost/Pack</div><div class="kpi-value kv-red" id="costTop">₹0</div></div>
   <div class="kpi"><div class="kpi-label">Profit/Pack</div><div class="kpi-value kv-green" id="profitTop">₹0</div></div>
   <div class="kpi"><div class="kpi-label">Margin</div><div class="kpi-value" id="profitPct">0%</div></div>
-  <div class="kpi"><div class="kpi-label">Packs</div><div class="kpi-value" id="packsTop">0</div></div>
+  <div class="kpi">
+    <div class="kpi-label">Packs <span style="font-size:9px;opacity:0.7;cursor:help;" title="Edit to calculate Batch kg">✏️</span></div>
+    <input type="number" class="kpi-value" id="packsTopInput" value="0" oninput="onPacksInput()" style="width:100%; text-align:center; background:transparent; border:none; color:#fff; outline:none; -moz-appearance:textfield; padding:0;">
+  </div>
   <div class="kpi"><div class="kpi-label">Raw Cost</div><div class="kpi-value" id="purchaseTop">₹0</div></div>
 </div>
 
@@ -643,6 +652,23 @@ function onInput() {
   saveTimer = setTimeout(() => { autoSaveCurrent(); rebuildProfileSelect(); }, 900);
 }
 
+function onPacksInput() {
+  const packs = parseInt(el("packsTopInput").value) || 0;
+  const waste = clamp(v("waste"),0,99.99) / 100;
+  const packSize = Math.max(0.001, v("packSize"));
+  
+  if (packs > 0) {
+    const newBatch = (packs * packSize) / (1000 * (1-waste));
+    el("batch").value = parseFloat(newBatch.toFixed(3));
+  } else {
+    el("batch").value = 0;
+  }
+  
+  calc();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => { autoSaveCurrent(); rebuildProfileSelect(); }, 900);
+}
+
 /* ═══════════════════════════════════════════
    TABLE
 ═══════════════════════════════════════════ */
@@ -758,7 +784,9 @@ function calc() {
   el("profitPct").innerText = fmtD(margin,1)+"%";
   el("profitTop").innerText = "₹"+fmtD(ppp,1);
   el("costTop").innerText   = "₹"+fmtD(cpp,1);
-  el("packsTop").innerText  = fmt(packs);
+  if (document.activeElement !== el("packsTopInput")) {
+    el("packsTopInput").value = Math.round(packs);
+  }
   el("purchaseTop").innerText="₹"+fmt(raw);
 
   // ── Margin bar ──
