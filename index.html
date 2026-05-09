@@ -43,6 +43,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 30%),
     linear-gradient(135deg, var(--bg), #0f172a 70%);
@@ -153,18 +154,19 @@ input {
   width: 100%;
   min-width: 0;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 6px;
   background: rgba(3, 7, 18, 0.62);
   color: var(--text);
   outline: 0;
+  font-size: 13px;
 }
 
 select,
 .profile-name,
 .input-grid input,
 .scenario-grid input {
-  height: 42px;
-  padding: 0 12px;
+  height: 36px;
+  padding: 0 10px;
 }
 
 body.light select,
@@ -260,7 +262,9 @@ select:focus {
 }
 
 .workspace {
-  padding: 24px;
+  padding: 16px;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .topbar {
@@ -286,10 +290,11 @@ select:focus {
 
 .primary,
 .secondary {
-  min-height: 42px;
-  padding: 0 16px;
+  min-height: 36px;
+  padding: 0 14px;
   border-radius: 8px;
   font-weight: 800;
+  font-size: 13px;
   color: white;
 }
 
@@ -311,8 +316,8 @@ select:focus {
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .metric-strip article,
@@ -322,7 +327,7 @@ select:focus {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 16px;
+  padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--panel);
@@ -334,46 +339,49 @@ select:focus {
 .extra-grid span,
 .scenario-output span {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .metric-sub {
   display: block;
-  margin-top: 4px;
+  margin-top: 3px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: none;
   letter-spacing: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .metric-strip strong,
 .summary-grid strong,
 .extra-grid strong,
 .scenario-output strong {
-  font-size: 24px;
+  font-size: 20px;
+  line-height: 1.1;
 }
 
 .metric-editable input {
   display: block;
   width: 100%;
-  height: 32px;
+  height: 28px;
   padding: 0;
   border: 0;
   background: transparent;
   color: var(--text);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 900;
   text-align: left;
   box-shadow: none;
@@ -381,8 +389,8 @@ select:focus {
 }
 
 .panel {
-  margin-top: 14px;
-  padding: 20px;
+  margin-top: 10px;
+  padding: 16px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(17, 24, 39, 0.84);
@@ -401,8 +409,8 @@ body.light .scenario-output {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
 .section-heading h3 {
@@ -424,13 +432,13 @@ body.light .scenario-output {
 .input-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
+  gap: 8px;
 }
 
 label {
   display: grid;
-  gap: 8px;
-  font-size: 12px;
+  gap: 5px;
+  font-size: 11px;
   font-weight: 800;
 }
 
@@ -482,25 +490,27 @@ label.error .field-note {
 
 table {
   width: 100%;
-  min-width: 760px;
+  min-width: 520px;
   border-collapse: collapse;
 }
 
 th,
 td {
   border-bottom: 1px solid var(--line);
-  padding: 10px 8px;
+  padding: 8px 6px;
   text-align: left;
 }
 
 th {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
 }
 
 td input {
-  height: 36px;
+  height: 32px;
+  font-size: 13px;
+  padding: 0 8px;
 }
 
 td:nth-child(2),
@@ -530,8 +540,8 @@ th:nth-child(5) {
 .extra-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .cost-breakdown {
@@ -620,62 +630,79 @@ th:nth-child(5) {
 }
 
 @media (max-width: 1100px) {
-  .app-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    position: static;
-    height: auto;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .side-nav {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .metric-strip {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .input-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 16px; }
+  .side-nav { grid-template-columns: repeat(3, 1fr); margin: 16px 0; }
+  .metric-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .input-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .extra-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
-@media (max-width: 720px) {
-  .workspace,
-  .sidebar {
-    padding: 16px;
-  }
+@media (max-width: 600px) {
+  body { overflow-x: hidden; }
 
-  .topbar,
-  .section-heading {
-    align-items: stretch;
-    flex-direction: column;
-  }
+  .workspace { padding: 10px; overflow-x: hidden; }
+  .sidebar { padding: 12px; }
 
-  .top-actions,
-  .side-nav {
-    grid-template-columns: 1fr;
-  }
+  .topbar { flex-direction: column; gap: 10px; margin-bottom: 10px; }
+  .topbar h2 { font-size: 20px; }
 
-  .metric-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .top-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .top-actions button { font-size: 11px; padding: 0 8px; min-height: 30px; }
 
-  .input-grid,
-  .summary-grid,
-  .extra-grid,
-  .scenario-grid {
-    grid-template-columns: 1fr;
-  }
+  .section-heading { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .section-heading h3 { font-size: 15px; }
+  .eyebrow { font-size: 9px; margin-bottom: 2px; }
 
-  .top-actions {
-    display: grid;
-  }
+  /* Metric strip: 3 per row on phone */
+  .metric-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin-bottom: 8px; }
+  .metric-strip article { padding: 8px 6px; }
+  .metric-strip > article > span { font-size: 8px; margin-bottom: 3px; letter-spacing: 0.04em; }
+  .metric-strip strong { font-size: 13px; }
+  .metric-sub { font-size: 8px; margin-top: 2px; }
+  .metric-editable input { font-size: 13px; height: 18px; }
+
+  /* Input grid: 2 per row */
+  .input-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  label { gap: 4px; font-size: 10px; }
+  .input-grid input { height: 32px; font-size: 13px; padding: 0 8px; }
+  .field-note { font-size: 9px; min-height: 9px; }
+
+  /* Summary: 2 per row */
+  .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .summary-grid article { padding: 10px 8px; }
+  .summary-grid > article > span { font-size: 9px; margin-bottom: 4px; }
+  .summary-grid strong { font-size: 15px; }
+
+  /* Extra grid: 2 per row */
+  .extra-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; }
+  .extra-grid article { padding: 10px 8px; }
+  .extra-grid > article > span { font-size: 9px; margin-bottom: 4px; }
+  .extra-grid strong { font-size: 15px; }
+
+  /* Scenario: stack */
+  .scenario-grid { grid-template-columns: 1fr; gap: 6px; }
+
+  /* Panel */
+  .panel { padding: 10px; margin-top: 8px; }
+  .section-heading { margin-bottom: 10px; }
+
+  /* Cost breakdown compact */
+  .cost-breakdown { padding: 10px; gap: 6px; }
+
+  /* Side nav */
+  .side-nav { grid-template-columns: repeat(3, 1fr); margin: 8px 0; gap: 6px; }
+  .side-nav a { padding: 6px 8px; font-size: 12px; text-align: center; }
+
+  /* Health card compact */
+  .health-card { padding: 10px; }
+  .health-card strong { font-size: 18px; margin: 4px 0 8px; }
+
+  /* Target callout */
+  .target-callout { padding: 8px 10px; font-size: 12px; margin-top: 8px; }
 }
+
 
 @media print {
   body {
