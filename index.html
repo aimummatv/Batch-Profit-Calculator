@@ -1,1065 +1,1775 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Batch Profit Calculator</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Batch Profit Studio</title>
+    <style>
 :root {
-  --bg: #f0f2f7;
-  --bg2: #e6e9f0;
-  --card: #ffffff;
-  --border: #dde1ec;
-  --text: #0f1420;
-  --sub: #6b7080;
-  --accent: #2355f5;
-  --accent2: #0ea5e9;
-  --danger: #ef4444;
-  --warn: #f59e0b;
-  --ok: #10b981;
-  --font: 'DM Sans', sans-serif;
-  --mono: 'DM Mono', monospace;
-  --r: 14px;
-  --shadow: 0 2px 12px rgba(0,0,0,.07);
+  color-scheme: dark;
+  --bg: #080b12;
+  --panel: #111827;
+  --panel-2: #151f32;
+  --line: #273247;
+  --text: #eff6ff;
+  --muted: #8ea1bf;
+  --blue: #3b82f6;
+  --green: #22c55e;
+  --red: #fb7185;
+  --amber: #f59e0b;
+  --violet: #a78bfa;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
 }
-body.dark {
-  --bg: #0b0d14;
-  --bg2: #111420;
-  --card: #161b28;
-  --border: #232840;
-  --text: #eef0fa;
-  --sub: #7880a0;
-  --accent: #4f7bff;
-  --shadow: 0 2px 12px rgba(0,0,0,.3);
+
+body.light {
+  color-scheme: light;
+  --bg: #f4f7fb;
+  --panel: #ffffff;
+  --panel-2: #eef4ff;
+  --line: #d8e0ed;
+  --text: #0f172a;
+  --muted: #64748b;
+  --shadow: 0 24px 70px rgba(30, 41, 59, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 18px;
-  padding: 12px 14px 40px;
+  margin: 0;
   min-height: 100vh;
-  transition: background .25s, color .25s;
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 30%),
+    linear-gradient(135deg, var(--bg), #0f172a 70%);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0;
 }
 
-/* ── HEADER ── */
-.app-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 12px; gap: 8px; flex-wrap: wrap;
-}
-.app-title { font-size: 18px; font-weight: 800; letter-spacing: -.03em; color: var(--text); white-space: nowrap; }
-.app-title span { color: var(--accent); }
-.header-right { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
-
-.icon-btn {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 10px; padding: 6px 12px;
-  font-family: var(--font); font-size: 12px; font-weight: 600;
-  color: var(--text); cursor: pointer;
-  box-shadow: var(--shadow);
-  transition: all .2s; white-space: nowrap;
-}
-.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-/* ── PROFILE BAR ── */
-.profile-bar {
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 10px; flex-wrap: wrap;
-}
-.profile-select {
-  flex: 1; min-width: 0; max-width: 260px;
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 10px; padding: 8px 12px;
-  font-family: var(--font); font-size: 13px; font-weight: 600;
-  color: var(--text); cursor: pointer; outline: none;
-  box-shadow: var(--shadow); appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7080' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 10px center;
-  padding-right: 30px;
-}
-.profile-label {
-  font-size: 10px; font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--sub); white-space: nowrap;
-}
-.profile-new-wrap { display: flex; gap: 6px; flex: 1; min-width: 0; width: 100%; }
-.profile-new-input {
-  flex: 1; background: var(--bg); border: 1px solid var(--border);
-  border-radius: 10px; padding: 7px 10px;
-  font-family: var(--font); font-size: 13px; font-weight: 600;
-  color: var(--text); outline: none; transition: border-color .2s;
-}
-.profile-new-input:focus { border-color: var(--accent); }
-.profile-new-input::placeholder { color: var(--sub); font-weight: 400; }
-.btn-sm {
-  background: var(--accent); color: #fff; border: none;
-  border-radius: 10px; padding: 7px 14px;
-  font-family: var(--font); font-size: 12px; font-weight: 700;
-  cursor: pointer; white-space: nowrap; transition: opacity .2s;
-}
-.btn-sm:hover { opacity: .85; }
-.btn-sm.danger { background: #ef4444; }
-.btn-sm.neutral { background: var(--sub); }
-
-/* ── TOP KPI BAR ── */
-#topBar {
-  background: #0f1117;
-  border-radius: var(--r);
-  display: grid; grid-template-columns: repeat(5,1fr);
-  margin-bottom: 10px; overflow: hidden;
-  position: sticky; top: 0; z-index: 10;
-  box-shadow: 0 4px 20px rgba(0,0,0,.25);
-}
-body.dark #topBar { background: #1a1f30; border: 1px solid var(--border); }
-.kpi { padding: 12px 8px; text-align: center; border-right: 1px solid rgba(255,255,255,.06); }
-.kpi:last-child { border-right: none; }
-.kpi-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.kpi-value { font-family: var(--mono); font-size: 18px; font-weight: 600; color: #fff; line-height: 1.2; }
-.kv-green  { color: #4ade80 !important; }
-.kv-red    { color: #f87171 !important; }
-.kv-yellow { color: #fbbf24 !important; }
-
-/* ── CARD ── */
-.card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 14px 16px;
-  margin-bottom: 10px; transition: background .25s, border-color .25s;
-  box-shadow: var(--shadow);
-}
-.card-title {
-  font-size: 12px; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--sub); margin-bottom: 12px;
-  display: flex; align-items: center; gap: 6px;
-}
-.card-title-badge {
-  background: var(--bg2); border-radius: 99px;
-  padding: 2px 8px; font-size: 9px; font-weight: 700;
-  color: var(--sub); letter-spacing: .06em;
+button,
+input,
+select {
+  font: inherit;
 }
 
-/* ── INPUTS ── */
-.inputGrid {
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+.app-shell {
   display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  gap: 6px;
+  grid-template-columns: 292px minmax(0, 1fr);
+  min-height: 100vh;
 }
-.inputBox {
-  background: var(--bg); border: 1.5px solid var(--border);
-  border-radius: 10px; padding: 7px 8px;
-  transition: border-color .2s, background .25s;
-  min-width: 0; position: relative;
+
+body.sidebar-collapsed .app-shell {
+  grid-template-columns: 1fr;
 }
-.inputBox:focus-within { border-color: var(--accent); background: var(--card); }
-.inputBox.warn-field { border-color: var(--warn) !important; }
-.inputBox.err-field  { border-color: var(--danger) !important; }
-.inputBox label {
-  display: block; font-size: 13px; font-weight: 700;
-  color: var(--sub); margin-bottom: 3px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+
+body.sidebar-collapsed .sidebar {
+  display: none;
 }
-.inputBox input {
-  width: 100%; border: none; background: transparent;
-  font-family: var(--mono); font-size: 17px; font-weight: 600;
-  color: var(--text); outline: none; min-width: 0;
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 22px;
+  border-right: 1px solid var(--line);
+  background: rgba(8, 11, 18, 0.78);
+  backdrop-filter: blur(24px);
 }
-.field-hint {
-  position: absolute; bottom: -18px; left: 0; right: 0;
-  font-size: 9px; font-weight: 600; color: var(--warn);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  pointer-events: none;
+
+body.light .sidebar {
+  background: rgba(255, 255, 255, 0.78);
 }
-.field-hint.err { color: var(--danger); }
 
-/* ── MARGIN BAR ── */
-.mbar-wrap {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;
-  transition: background .25s;
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 26px;
 }
-.mbar-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.mbar-title { font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--sub); }
-.mbar-pct   { font-family: var(--mono); font-size: 15px; font-weight: 700; }
-.mbar-track { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
-.mbar-fill  { height: 100%; border-radius: 99px; transition: width .45s ease, background .4s; }
-.mbar-labels { display: flex; justify-content: space-between; margin-top: 4px; font-size: 10px; font-weight: 500; flex-wrap: wrap; gap: 2px; }
 
-/* Target margin row */
-.target-row {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--bg2); border-radius: 10px; padding: 10px 12px;
-  margin-bottom: 10px; flex-wrap: wrap; gap: 8px;
-  border: 1px solid var(--border);
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--blue), var(--green));
+  color: white;
+  font-weight: 900;
 }
-.target-label { font-size: 11px; font-weight: 700; color: var(--sub); white-space: nowrap; }
-.target-input-wrap { display: flex; align-items: center; gap: 6px; }
-.target-input {
-  width: 70px; background: var(--card); border: 1.5px solid var(--border);
-  border-radius: 8px; padding: 5px 8px;
-  font-family: var(--mono); font-size: 14px; font-weight: 700;
-  color: var(--text); outline: none; text-align: center;
-  transition: border-color .2s;
-}
-.target-input:focus { border-color: var(--accent); }
-.target-pct-sym { font-size: 13px; font-weight: 700; color: var(--sub); }
-.target-result {
-  flex: 1; min-width: 160px;
-  font-size: 13px; font-weight: 600; color: var(--sub);
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-}
-.target-mrp-pill {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 8px; padding: 4px 12px;
-  font-family: var(--mono); font-size: 14px; font-weight: 700;
-  transition: all .3s;
-}
-.target-mrp-pill.above { color: var(--ok); border-color: var(--ok); background: #f0fdf4; }
-.target-mrp-pill.below { color: var(--danger); border-color: var(--danger); background: #fef2f2; }
-body.dark .target-mrp-pill.above { background: #052e1633; }
-body.dark .target-mrp-pill.below { background: #450a0a33; }
-.target-status { font-size: 11px; font-weight: 600; }
-.target-status.above { color: var(--ok); }
-.target-status.below { color: var(--danger); }
 
-
-
-/* ── TABLE ── */
-.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 0; }
-col.c-name  { width: 22%; }
-col.c-pct   { width: 13%; }
-col.c-qty   { width: 18%; }
-col.c-price { width: 18%; }
-col.c-cost  { width: 20%; }
-col.c-del   { width: 9%; }
-thead tr { border-bottom: 2px solid var(--border); }
-th {
-  padding: 8px 6px; font-size: 11px; font-weight: 700; letter-spacing: .04em;
-  text-transform: uppercase; color: var(--sub); text-align: right;
-  border-right: 1px solid var(--border);
-}
-th:first-child { text-align: left; }
-th:last-child { border-right: none; }
-tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
-tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: var(--bg); }
-td {
-  padding: 8px 6px; text-align: right; vertical-align: middle; font-size: 14px;
-  border-right: 1px solid var(--border);
-}
-td:first-child { text-align: left; }
-td:last-child { border-right: none; }
-.nameInput { width: 100%; border: none; background: transparent; font-family: var(--font); font-size: 14px; font-weight: 600; color: var(--text); outline: none; padding: 0; min-width: 0; }
-.nameInput:focus { color: var(--accent); }
-.numInput { width: 100%; border: none; background: transparent; font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text); outline: none; text-align: right; padding: 0; min-width: 0; }
-.numInput:focus { color: var(--accent); }
-.qty-text  { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--text); }
-.cost-text { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--text); }
-.del-btn { background: none; border: none; color: #ef4444; font-size: 16px; cursor: pointer; padding: 2px 4px; border-radius: 6px; transition: background .15s; display: block; margin: auto; }
-.del-btn:hover { background: #fee2e2; }
-body.dark .del-btn:hover { background: #7f1d1d44; }
-
-.table-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; flex-wrap: wrap; gap: 8px; }
-.pct-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 99px; font-size: 13px; font-weight: 700; transition: background .3s, color .3s; }
-.pct-ok   { background: #dcfce7; color: #15803d; }
-.pct-warn { background: #fef9c3; color: #92400e; }
-.pct-err  { background: #fee2e2; color: #b91c1c; }
-body.dark .pct-ok   { background: #14532d55; color: #4ade80; }
-body.dark .pct-warn { background: #78350f55; color: #fbbf24; }
-body.dark .pct-err  { background: #7f1d1d55; color: #f87171; }
-.add-btn { display: inline-flex; align-items: center; gap: 5px; background: var(--text); color: var(--card); border: none; border-radius: 8px; padding: 7px 14px; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity .2s, background .25s; }
-.add-btn:hover { opacity: .8; }
-
-/* ── SUMMARY ── */
-.stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 10px; }
-.stat-pill { border-radius: 12px; padding: 12px 12px; display: flex; flex-direction: column; gap: 4px; }
-.stat-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-.stat-val   { font-family: var(--mono); font-size: 19px; font-weight: 700; }
-.sp-blue   { background: #eff6ff; color: #1d4ed8; }
-.sp-violet { background: #f5f3ff; color: #5b21b6; }
-.sp-green  { background: #f0fdf4; color: #15803d; }
-.sp-orange { background: #fff7ed; color: #c2410c; }
-body.dark .sp-blue   { background: #1e3a6e22; color: #60a5fa; }
-body.dark .sp-violet { background: #3b1f7522; color: #a78bfa; }
-body.dark .sp-green  { background: #14532d22; color: #4ade80; }
-body.dark .sp-orange { background: #7c2d1222; color: #fb923c; }
-
-.extra-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 10px; }
-.extra-pill { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; transition: background .25s; }
-.extra-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); }
-.extra-val   { font-family: var(--mono); font-size: 17px; font-weight: 700; color: var(--text); }
-
-.be-strip { display: flex; align-items: center; justify-content: space-between; background: #0f1117; border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
-body.dark .be-strip { background: #1a1f30; border: 1px solid var(--border); }
-.be-left { display: flex; align-items: center; gap: 10px; }
-.be-icon { font-size: 20px; }
-.be-lbl  { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: rgba(255,255,255,.35); }
-.be-sub  { font-size: 11px; color: rgba(255,255,255,.22); margin-top: 1px; }
-.be-right { text-align: right; }
-.be-val  { font-family: var(--mono); font-size: 22px; font-weight: 700; color: #fff; }
-.be-pct  { font-size: 11px; color: rgba(255,255,255,.28); margin-top: 2px; }
-
-.breakdown-grid { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
-.brow { background: var(--card); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); transition: background .25s; gap: 8px; }
-.brow:last-child { border-bottom: none; }
-.brow.total { background: #0f1117; }
-body.dark .brow.total { background: #1a1f30; }
-.brow-lbl { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--sub); min-width: 0; }
-.brow-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.brow-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap; }
-.brow.total .brow-lbl { color: rgba(255,255,255,.5); font-weight: 600; }
-.brow.total .brow-dot { background: #fff !important; }
-.brow.total .brow-val { color: #fff; font-size: 15px; }
-
-/* ── EXPORT BUTTONS ── */
-.export-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.export-btn {
-  display: flex; align-items: center; justify-content: center; gap: 7px;
-  padding: 13px; border: none; border-radius: 12px;
-  font-family: var(--font); font-size: 14px; font-weight: 700;
-  cursor: pointer; transition: transform .15s, opacity .2s;
-}
-.export-btn:active { transform: scale(.97); }
-.export-btn.loading { opacity: .65; pointer-events: none; }
-.export-btn.pdf { background: linear-gradient(135deg,#2355f5,#0ea5e9); color: #fff; box-shadow: 0 4px 14px rgba(37,99,235,.25); }
-.export-btn.wa  { background: linear-gradient(135deg,#16a34a,#22c55e); color: #fff; box-shadow: 0 4px 14px rgba(22,163,74,.2); }
-
-/* ── TOAST ── */
-.toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(14px); background: #0f1117; color: #fff; padding: 9px 20px; border-radius: 99px; font-size: 13px; font-weight: 600; opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; z-index: 999; white-space: nowrap; max-width: 90vw; text-align: center; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-#packsTopInput::-webkit-outer-spin-button,
-#packsTopInput::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+h1,
+h2,
+h3,
+p {
   margin: 0;
 }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 600px) {
-  body { padding: 10px 10px 28px; }
-  #topBar { grid-template-columns: repeat(3, 1fr); position: static; }
-  #topBar .kpi:nth-child(3) { border-right: none; }
-  #topBar .kpi:nth-child(4) { border-top: 1px solid rgba(255,255,255,.06); }
-  #topBar .kpi:nth-child(5) { border-top: 1px solid rgba(255,255,255,.06); border-right: none; }
-  .kpi-value { font-size: 14px; }
-  .inputGrid { grid-template-columns: repeat(3, 1fr); }
-  .stat-row  { grid-template-columns: repeat(2, 1fr); }
-  .stat-val  { font-size: 15px; }
-  .extra-row { grid-template-columns: repeat(2, 1fr); }
-  .extra-val { font-size: 13px; }
-  .be-strip  { flex-direction: column; align-items: flex-start; }
-  .be-right  { text-align: left; }
-  .export-row { grid-template-columns: 1fr; }
-  .export-btn { font-size: 13px; padding: 12px; }
-  .app-title { font-size: 15px; }
-  /* Profile bar: select full width on top, input+buttons below */
-  .profile-select { max-width: 100%; width: 100%; }
-  .profile-new-wrap { width: 100%; }
-  .profile-new-input { min-width: 0; flex: 1; }
-  .btn-sm { padding: 7px 12px; font-size: 12px; flex-shrink: 0; }
+.brand h1 {
+  font-size: 20px;
 }
-@media (min-width: 601px) and (max-width: 900px) {
-  .inputGrid { grid-template-columns: repeat(5, 1fr); }
-  .stat-row  { grid-template-columns: repeat(2, 1fr); }
+
+.brand p,
+.eyebrow,
+.field-label,
+.health-card span,
+label {
+  color: var(--muted);
 }
-@media (max-width: 400px) {
-  .extra-row { grid-template-columns: 1fr 1fr; }
+
+.brand p {
+  margin-top: 2px;
+  font-size: 13px;
 }
+
+.field-label,
+.eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.profile-row {
+  display: grid;
+  grid-template-columns: 1fr 58px;
+  gap: 8px;
+}
+
+select,
+input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(3, 7, 18, 0.62);
+  color: var(--text);
+  outline: 0;
+}
+
+select,
+.profile-name,
+.input-grid input,
+.scenario-grid input {
+  height: 42px;
+  padding: 0 12px;
+}
+
+body.light select,
+body.light input {
+  background: #ffffff;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.profile-row select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-name {
+  margin-top: 10px;
+}
+
+.delete-profile {
+  width: 100%;
+  min-height: 34px;
+  margin-top: 8px;
+  border: 1px solid rgba(251, 113, 133, 0.38);
+  border-radius: 8px;
+  background: rgba(251, 113, 133, 0.1);
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.icon-button {
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.side-nav {
+  display: grid;
+  gap: 8px;
+  margin: 30px 0;
+}
+
+.side-nav a {
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.side-nav a:hover {
+  border-color: var(--line);
+  color: var(--text);
+  background: var(--panel);
+}
+
+.health-card {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.health-card strong {
+  display: block;
+  margin: 8px 0 12px;
+  font-size: 24px;
+}
+
+.mini-meter,
+.progress-track {
+  overflow: hidden;
+  height: 8px;
+  border-radius: 99px;
+  background: rgba(148, 163, 184, 0.22);
+}
+
+.mini-meter span,
+.progress-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--green);
+  transition: width 180ms ease, background 180ms ease;
+}
+
+.workspace {
+  padding: 24px;
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.topbar h2 {
+  max-width: 760px;
+  font-size: clamp(30px, 4vw, 58px);
+  line-height: 1;
+}
+
+.top-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.primary,
+.secondary {
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-weight: 800;
+  color: white;
+}
+
+.primary {
+  background: linear-gradient(135deg, var(--blue), var(--green));
+}
+
+.secondary {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+}
+
+.compact {
+  min-height: 36px;
+}
+
+.metric-strip,
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.metric-strip article,
+.summary-grid article,
+.extra-grid article,
+.scenario-output {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.metric-strip span,
+.summary-grid span,
+.extra-grid span,
+.scenario-output span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.metric-strip strong,
+.summary-grid strong,
+.extra-grid strong,
+.scenario-output strong {
+  font-size: 24px;
+}
+
+.metric-editable input {
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 24px;
+  font-weight: 900;
+  text-align: center;
+  box-shadow: none;
+}
+
+.panel {
+  margin-top: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 24, 39, 0.84);
+  box-shadow: var(--shadow);
+}
+
+body.light .panel,
+body.light .metric-strip article,
+body.light .summary-grid article,
+body.light .extra-grid article,
+body.light .scenario-output {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.section-heading h3 {
+  font-size: 22px;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+}
+
+.theme-toggle input {
+  width: 18px;
+  height: 18px;
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+label.warn input {
+  border-color: var(--amber);
+}
+
+label.error input {
+  border-color: var(--red);
+}
+
+.field-note {
+  min-height: 12px;
+  color: var(--amber);
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+label.error .field-note {
+  color: var(--red);
+}
+
+.target-callout {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--text);
+}
+
+.formula-meter {
+  margin-bottom: 14px;
+}
+
+.formula-meter-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--line);
+  padding: 10px 8px;
+  text-align: left;
+}
+
+th {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+td input {
+  height: 36px;
+}
+
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5),
+th:nth-child(2),
+th:nth-child(3),
+th:nth-child(4),
+th:nth-child(5) {
+  text-align: right;
+}
+
+.remove-row {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(251, 113, 133, 0.16);
+  color: var(--red);
+  font-weight: 900;
+}
+
+.summary-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.extra-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.cost-breakdown {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.cost-breakdown div {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 32px;
+  color: var(--muted);
+}
+
+.cost-breakdown strong {
+  color: var(--text);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.raw {
+  background: var(--red);
+}
+
+.packaging {
+  background: var(--violet);
+}
+
+.overhead {
+  background: var(--green);
+}
+
+.total {
+  background: var(--text);
+}
+
+.scenario-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  max-width: 360px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.good {
+  color: var(--green);
+}
+
+.bad {
+  color: var(--red);
+}
+
+.warn {
+  color: var(--amber);
+}
+
+@media (max-width: 1100px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .side-nav {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .metric-strip,
+  .input-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .workspace,
+  .sidebar {
+    padding: 16px;
+  }
+
+  .topbar,
+  .section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .top-actions,
+  .side-nav,
+  .metric-strip,
+  .input-grid,
+  .summary-grid,
+  .extra-grid,
+  .scenario-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .top-actions {
+    display: grid;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+    color: #0f172a;
+  }
+
+  .sidebar,
+  .top-actions,
+  .section-heading button,
+  .scenario-grid,
+  .toast {
+    display: none !important;
+  }
+
+  .app-shell {
+    display: block;
+  }
+
+  .workspace {
+    padding: 0;
+  }
+
+  .panel,
+  .metric-strip article,
+  .summary-grid article,
+  .extra-grid article {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">BP</div>
+          <div>
+            <h1>Batch Profit</h1>
+            <p>Production pricing studio</p>
+          </div>
+        </div>
+
+        <label class="field-label" for="profileSelect">Profile</label>
+        <div class="profile-row">
+          <select id="profileSelect"></select>
+          <button class="icon-button" id="saveProfile" title="Save profile" aria-label="Save profile">Save</button>
+        </div>
+        <button class="delete-profile" id="deleteProfile">Delete current profile</button>
+        <input id="profileName" class="profile-name" type="text" placeholder="New profile name" />
+
+        <nav class="side-nav" aria-label="Sections">
+          <a href="#batch">Batch</a>
+          <a href="#formula">Formula</a>
+          <a href="#summary">Summary</a>
+        </nav>
+
+        <div class="health-card">
+          <span>Target status</span>
+          <strong id="targetStatus">On track</strong>
+          <div class="mini-meter"><span id="targetMeter"></span></div>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Food manufacturing calculator</p>
+            <h2>Price batches before they cost you money.</h2>
+          </div>
+          <div class="top-actions">
+            <button class="secondary" id="toggleSidebar">Hide sidebar</button>
+            <button class="secondary" id="loadSample">Load sample</button>
+            <button class="secondary" id="resetApp">Reset</button>
+            <button class="primary" id="shareSummary">Share summary</button>
+          </div>
+        </header>
+
+        <section class="metric-strip" aria-label="Key metrics">
+          <article>
+            <span>Cost / pack</span>
+            <strong id="costPerPack">₹0.00</strong>
+          </article>
+          <article>
+            <span>Profit / pack</span>
+            <strong id="profitPerPack">₹0.00</strong>
+          </article>
+          <article>
+            <span>Margin <span id="marginTargetLabel" style="font-weight:400;text-transform:none;letter-spacing:0"></span></span>
+            <strong id="margin">0%</strong>
+          </article>
+          <article class="metric-editable">
+            <span>Packs</span>
+            <input id="editablePackCount" type="number" min="0" step="1" aria-label="Packs" />
+          </article>
+          <article>
+            <span>Raw cost</span>
+            <strong id="rawCostTop">₹0</strong>
+          </article>
+        </section>
+
+        <section class="panel" id="batch">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Batch setup</p>
+              <h3>Inputs</h3>
+            </div>
+            <label class="theme-toggle">
+              <input id="themeToggle" type="checkbox" />
+              <span>Light</span>
+            </label>
+          </div>
+
+          <div class="input-grid">
+            <label>
+              Batch kg
+              <input data-model="batchKg" type="number" min="0" step="0.01" />
+              <span class="field-note" data-note="batchKg"></span>
+            </label>
+            <label>
+              MRP ₹
+              <input data-model="mrp" type="number" min="0" step="0.01" />
+              <span class="field-note" data-note="mrp"></span>
+            </label>
+            <label>
+              Retail %
+              <input data-model="retailPercent" type="number" min="0" max="100" step="0.1" />
+              <span class="field-note" data-note="retailPercent"></span>
+            </label>
+            <label>
+              Waste %
+              <input data-model="wastePercent" type="number" min="0" max="99.99" step="0.1" />
+              <span class="field-note" data-note="wastePercent"></span>
+            </label>
+            <label>
+              Pack g
+              <input data-model="packGrams" type="number" min="1" step="1" />
+              <span class="field-note" data-note="packGrams"></span>
+            </label>
+            <label>
+              Pack ₹
+              <input data-model="packCost" type="number" min="0" step="0.01" />
+            </label>
+            <label>
+              Labour ₹
+              <input data-model="labourPerPack" type="number" min="0" step="0.01" />
+            </label>
+            <label>
+              Electricity ₹
+              <input data-model="electricityPerPack" type="number" min="0" step="0.01" />
+            </label>
+            <label>
+              Misc ₹
+              <input data-model="miscPerPack" type="number" min="0" step="0.01" />
+            </label>
+            <label>
+              Target margin %
+              <input data-model="targetMargin" type="number" min="0" max="95" step="0.1" />
+            </label>
+          </div>
+
+          <div class="target-callout" id="targetCallout"></div>
+        </section>
+
+        <section class="panel" id="formula">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Recipe costing</p>
+              <h3>Ingredients</h3>
+            </div>
+            <button class="primary compact" id="addIngredient">Add ingredient</button>
+          </div>
+          <p style="margin:0 0 14px;font-size:12px;color:var(--muted);">
+            Ingredient quantities are calculated on the <strong style="color:var(--text)">full batch weight</strong> (before waste). Waste represents processing loss — you purchase the full amount but yield less finished product.
+          </p>
+
+          <div class="formula-meter">
+            <div class="formula-meter-top">
+              <span>Formula total</span>
+              <strong id="formulaTotal">0%</strong>
+            </div>
+            <div class="progress-track"><span id="formulaBar"></span></div>
+          </div>
+          <div id="formulaWarning" style="display:none;margin-bottom:12px;padding:10px 14px;border:1px solid var(--amber);border-radius:8px;background:rgba(245,158,11,0.08);color:var(--amber);font-size:13px;font-weight:700;">
+            ⚠️ Formula exceeds 100% — raw material cost will be overstated. Adjust ingredient percentages to total exactly 100%.
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ingredient</th>
+                  <th>%</th>
+                  <th>Qty kg</th>
+                  <th>₹ / kg</th>
+                  <th>Cost</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="ingredientRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" id="summary">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Decision view</p>
+              <h3>Summary</h3>
+            </div>
+            <button class="secondary compact" id="exportCsv">Export CSV</button>
+            <button class="primary compact" id="exportPdf">Print PDF</button>
+          </div>
+
+          <div class="summary-grid">
+            <article>
+              <span>Effective batch</span>
+              <strong id="effectiveBatch">0 kg</strong>
+            </article>
+            <article>
+              <span>Revenue</span>
+              <strong id="revenue">₹0</strong>
+            </article>
+            <article>
+              <span>Net profit</span>
+              <strong id="netProfit">₹0</strong>
+            </article>
+            <article>
+              <span>Breakeven</span>
+              <strong id="breakeven">0 packs</strong>
+            </article>
+          </div>
+
+          <div class="extra-grid">
+            <article>
+              <span>Total cost</span>
+              <strong id="totalCost">₹0</strong>
+            </article>
+            <article>
+              <span>Cost / kg</span>
+              <strong id="costPerKg">₹0</strong>
+            </article>
+            <article>
+              <span>Revenue / kg</span>
+              <strong id="revenuePerKg">₹0</strong>
+            </article>
+            <article>
+              <span>Profit / kg</span>
+              <strong id="profitPerKg">₹0</strong>
+            </article>
+          </div>
+
+          <div class="cost-breakdown">
+            <div>
+              <span class="dot raw"></span>
+              <span>Raw material</span>
+              <strong id="rawMaterial">₹0</strong>
+            </div>
+            <div>
+              <span class="dot packaging"></span>
+              <span>Packaging</span>
+              <strong id="packaging">₹0</strong>
+            </div>
+            <div>
+              <span class="dot overhead"></span>
+              <span>Overheads</span>
+              <strong id="overheads">₹0</strong>
+            </div>
+            <div>
+              <span class="dot total"></span>
+              <span>Total production cost</span>
+              <strong id="productionCost">₹0</strong>
+            </div>
+          </div>
+
+          <div class="scenario-grid">
+            <div>
+              <label for="scenarioPrice">Scenario selling price ₹</label>
+              <input id="scenarioPrice" type="number" min="0" step="0.01" placeholder="Enter a price to test…" />
+            </div>
+            <div class="scenario-output">
+              <span>Scenario margin</span>
+              <strong id="scenarioMargin">0%</strong>
+            </div>
+            <div class="scenario-output">
+              <span>Required MRP</span>
+              <strong id="requiredMrp">₹0</strong>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script>
+const defaultProfile = {
+  name: "Default",
+  batchKg: 421.053,
+  mrp: 40,
+  retailPercent: 40,
+  wastePercent: 5,
+  packGrams: 20,
+  packCost: 1.7,
+  labourPerPack: 2,
+  electricityPerPack: 0.5,
+  miscPerPack: 0.5,
+  targetMargin: 30,
+  ingredients: [
+    { name: "Dates", percent: 55, rate: 220 },
+    { name: "Almond", percent: 8, rate: 650 },
+    { name: "Cashew", percent: 8, rate: 850 },
+    { name: "Peanut", percent: 14, rate: 200 },
+    { name: "Pista", percent: 5, rate: 1400 },
+    { name: "Ghee", percent: 5, rate: 650 },
+    { name: "Honey", percent: 5, rate: 250 },
+  ],
+};
+
+let state = loadState();
+
+const currency = new Intl.NumberFormat("en-IN", {
+  style: "currency",
+  currency: "INR",
+  maximumFractionDigits: 0,
+});
+
+const money = (value, decimals = 0) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(Number.isFinite(value) ? value : 0);
+
+const number = (value, decimals = 0) =>
+  new Intl.NumberFormat("en-IN", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(Number.isFinite(value) ? value : 0);
+
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => [...document.querySelectorAll(selector)];
+const toNumber = (value, fallback = 0) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+function loadState() {
+  const saved = localStorage.getItem("batch-profit-state");
+  if (!saved) {
+    return {
+      activeProfile: "Default",
+      profiles: { Default: structuredClone(defaultProfile) },
+      theme: "dark",
+      sidebarCollapsed: false,
+    };
+  }
+
+  try {
+    return {
+      sidebarCollapsed: false,
+      ...JSON.parse(saved),
+    };
+  } catch {
+    return {
+      activeProfile: "Default",
+      profiles: { Default: structuredClone(defaultProfile) },
+      theme: "dark",
+      sidebarCollapsed: false,
+    };
+  }
+}
+
+function persist() {
+  localStorage.setItem("batch-profit-state", JSON.stringify(state));
+}
+
+function activeProfile() {
+  if (!state.profiles[state.activeProfile]) {
+    state.activeProfile = Object.keys(state.profiles)[0] || "Default";
+    state.profiles[state.activeProfile] ||= structuredClone(defaultProfile);
+  }
+  return state.profiles[state.activeProfile];
+}
+
+function calculate(profile = activeProfile()) {
+  const batchKg = Math.max(0, toNumber(profile.batchKg));
+  const mrp = Math.max(0, toNumber(profile.mrp));
+  const retailPercent = clamp(toNumber(profile.retailPercent), 0, 99.99);
+  const wastePercent = clamp(toNumber(profile.wastePercent), 0, 99.99);
+  const packGrams = Math.max(0.001, toNumber(profile.packGrams, 0.001));
+  const packCost = Math.max(0, toNumber(profile.packCost));
+  const labourPerPack = Math.max(0, toNumber(profile.labourPerPack));
+  const electricityPerPack = Math.max(0, toNumber(profile.electricityPerPack));
+  const miscPerPack = Math.max(0, toNumber(profile.miscPerPack));
+  const targetMargin = clamp(toNumber(profile.targetMargin), 0, 99.99);
+  const retailFactor = 1 - retailPercent / 100;
+  const salePrice = mrp * retailFactor;
+  const effectiveBatchKg = batchKg * (1 - wastePercent / 100);
+  const packCount = Math.floor((effectiveBatchKg * 1000) / packGrams);
+  const ingredients = profile.ingredients.map((item) => {
+    const percent = Math.max(0, toNumber(item.percent));
+    const rate = Math.max(0, toNumber(item.rate));
+    const qtyKg = batchKg * (percent / 100);
+    const cost = qtyKg * rate;
+    return { ...item, percent, rate, qtyKg, cost };
+  });
+  const rawMaterial = ingredients.reduce((sum, item) => sum + item.cost, 0);
+  const packaging = packCount * packCost;
+  const overheads = packCount * (labourPerPack + electricityPerPack + miscPerPack);
+  const totalCost = rawMaterial + packaging + overheads;
+  const revenue = packCount * salePrice;
+  const netProfit = revenue - totalCost;
+  const costPerPack = packCount ? totalCost / packCount : 0;
+  const profitPerPack = salePrice - costPerPack;
+  const margin = (salePrice && packCount) ? (profitPerPack / salePrice) * 100 : 0;
+  const formulaTotal = profile.ingredients.reduce((sum, item) => sum + Number(item.percent || 0), 0);
+  const breakeven = salePrice ? Math.ceil(totalCost / salePrice) : 0;
+  const requiredSalePrice = costPerPack / (1 - targetMargin / 100);
+  const requiredMrp = retailFactor ? requiredSalePrice / retailFactor : 0;
+
+  return {
+    batchKg,
+    mrp,
+    retailPercent,
+    wastePercent,
+    packGrams,
+    packCost,
+    labourPerPack,
+    electricityPerPack,
+    miscPerPack,
+    targetMargin,
+    retailFactor,
+    salePrice,
+    effectiveBatchKg,
+    packCount,
+    ingredients,
+    rawMaterial,
+    packaging,
+    overheads,
+    totalCost,
+    revenue,
+    netProfit,
+    costPerPack,
+    profitPerPack,
+    margin,
+    formulaTotal,
+    breakeven,
+    requiredSalePrice,
+    requiredMrp,
+  };
+}
+
+function render() {
+  const profile = activeProfile();
+  document.body.classList.toggle("light", state.theme === "light");
+  document.body.classList.toggle("sidebar-collapsed", Boolean(state.sidebarCollapsed));
+  $("#themeToggle").checked = state.theme === "light";
+  $("#toggleSidebar").textContent = state.sidebarCollapsed ? "Show sidebar" : "Hide sidebar";
+
+  renderProfiles();
+  $$("[data-model]").forEach((input) => {
+    input.value = profile[input.dataset.model];
+  });
+  $("#profileName").value = profile.name === "Default" ? "" : profile.name;
+  renderIngredients(profile);
+  renderMetrics(profile);
+  runFieldWarnings(profile);
+  persist();
+}
+
+function renderProfiles() {
+  const select = $("#profileSelect");
+  const names = Object.keys(state.profiles);
+  select.innerHTML = names.map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join("");
+  select.value = state.activeProfile;
+}
+
+function normalizeModelValue(model, value) {
+  const numeric = toNumber(value);
+  if (["retailPercent", "wastePercent", "targetMargin"].includes(model)) return clamp(numeric, 0, 99.99);
+  return Math.max(0, numeric);
+}
+
+function renderIngredients(profile) {
+  const result = calculate(profile);
+  $("#ingredientRows").innerHTML = result.ingredients
+    .map(
+      (item, index) => `
+        <tr>
+          <td><input value="${escapeHtml(item.name)}" data-ingredient="${index}" data-key="name" aria-label="Ingredient name"></td>
+          <td><input value="${item.percent}" type="number" min="0" step="0.1" data-ingredient="${index}" data-key="percent" aria-label="Ingredient percent"></td>
+          <td class="qty-text" data-qty="${index}">${number(item.qtyKg, 2)}</td>
+          <td><input value="${item.rate}" type="number" min="0" step="0.01" data-ingredient="${index}" data-key="rate" aria-label="Ingredient rate"></td>
+          <td class="cost-text" data-cost="${index}">${money(item.cost)}</td>
+          <td><button class="remove-row" data-remove="${index}" aria-label="Remove ingredient">x</button></td>
+        </tr>
+      `
+    )
+    .join("");
+}
+
+function renderMetrics(profile) {
+  const result = calculate(profile);
+  const scenarioPriceInput = $("#scenarioPrice");
+  const scenarioPrice = scenarioPriceInput.value !== ""
+    ? Number(scenarioPriceInput.value)
+    : result.salePrice;
+  const scenarioMargin = scenarioPrice ? ((scenarioPrice - result.costPerPack) / scenarioPrice) * 100 : 0;
+  if (document.activeElement !== $("#editablePackCount")) {
+    $("#editablePackCount").value = result.packCount;
+  }
+  updateIngredientOutputs(result);
+
+  $("#costPerPack").textContent = money(result.costPerPack, 2);
+  $("#profitPerPack").textContent = money(result.profitPerPack, 2);
+  $("#margin").textContent = `${number(result.margin, 1)}%`;
+  const marginLbl = $("#marginTargetLabel");
+  if (marginLbl) marginLbl.textContent = result.targetMargin > 0 ? `(target ${number(result.targetMargin, 1)}%)` : "";
+  $("#rawCostTop").textContent = currency.format(result.rawMaterial);
+  $("#totalCost").textContent = currency.format(result.totalCost);
+  $("#effectiveBatch").textContent = `${number(result.effectiveBatchKg, 2)} kg`;
+  $("#revenue").textContent = currency.format(result.revenue);
+  $("#netProfit").textContent = currency.format(result.netProfit);
+  $("#breakeven").textContent = `${number(result.breakeven)} packs`;
+  $("#costPerKg").textContent = result.effectiveBatchKg ? money(result.totalCost / result.effectiveBatchKg, 1) : "₹0";
+  $("#revenuePerKg").textContent = result.effectiveBatchKg ? money(result.revenue / result.effectiveBatchKg, 1) : "₹0";
+  $("#profitPerKg").textContent = result.effectiveBatchKg ? money(result.netProfit / result.effectiveBatchKg, 1) : "₹0";
+  $("#rawMaterial").textContent = currency.format(result.rawMaterial);
+  $("#packaging").textContent = currency.format(result.packaging);
+  $("#overheads").textContent = currency.format(result.overheads);
+  $("#productionCost").textContent = currency.format(result.totalCost);
+  $("#formulaTotal").textContent = `${number(result.formulaTotal, 1)}%`;
+  $("#formulaBar").style.width = `${Math.min(result.formulaTotal, 100)}%`;
+  $("#formulaBar").style.background = result.formulaTotal === 100 ? "var(--green)" : result.formulaTotal > 100 ? "var(--red)" : "var(--amber)";
+  const formulaWarning = $("#formulaWarning");
+  if (formulaWarning) formulaWarning.style.display = result.formulaTotal > 100 ? "block" : "none";
+  $("#scenarioMargin").textContent = scenarioPriceInput.value !== "" ? `${number(scenarioMargin, 1)}%` : "—";
+  $("#requiredMrp").textContent = money(result.requiredMrp, 2);
+
+  const targetMet = result.margin >= result.targetMargin;
+  const targetGap = result.margin - result.targetMargin;
+  const targetCostPerPack = result.salePrice * (1 - result.targetMargin / 100);
+  const reductionNeeded = Math.max(0, result.costPerPack - targetCostPerPack);
+  $("#targetStatus").textContent = targetMet ? "On track" : "Needs work";
+  $("#targetStatus").className = targetMet ? "good" : "bad";
+  $("#targetMeter").style.width = `${Math.max(4, Math.min((result.margin / Math.max(result.targetMargin, 1)) * 100, 100))}%`;
+  $("#targetMeter").style.background = targetMet ? "var(--green)" : "var(--red)";
+  $("#targetCallout").innerHTML = targetMet
+    ? `Current margin is <strong class="good">${number(result.margin, 1)}%</strong>, which clears the ${number(result.targetMargin, 1)}% target by ${number(targetGap, 1)} points.`
+    : `Current margin is <strong class="bad">${number(result.margin, 1)}%</strong>. To reach ${number(result.targetMargin, 1)}%, sell near <strong>${money(result.requiredSalePrice, 2)}</strong> per pack or reduce cost by <strong>${money(reductionNeeded, 2)}</strong> per pack.`;
+
+  colorMetric("#profitPerPack", result.profitPerPack);
+  colorMetric("#netProfit", result.netProfit);
+  colorMetric("#margin", result.margin - result.targetMargin);
+  runFieldWarnings(profile);
+}
+
+function updateIngredientOutputs(result) {
+  result.ingredients.forEach((item, index) => {
+    const qty = $(`[data-qty="${index}"]`);
+    const cost = $(`[data-cost="${index}"]`);
+    if (qty) qty.textContent = number(item.qtyKg, 2);
+    if (cost) cost.textContent = money(item.cost);
+  });
+}
+
+function runFieldWarnings(profile) {
+  const batchKg = toNumber(profile.batchKg);
+  const mrp = toNumber(profile.mrp);
+  const packGrams = toNumber(profile.packGrams);
+  const wastePercent = toNumber(profile.wastePercent);
+  const retailPercent = toNumber(profile.retailPercent);
+  const warnings = {
+    wastePercent: wastePercent >= 50 ? ["error", "Very high loss"] : wastePercent >= 30 ? ["warn", "High waste"] : ["", ""],
+    retailPercent: retailPercent >= 80 ? ["error", "Leaves little margin"] : retailPercent >= 65 ? ["warn", "High retail cut"] : ["", ""],
+    batchKg: batchKg <= 0 ? ["error", "Must be greater than 0"] : ["", ""],
+    mrp: mrp <= 0 ? ["error", "Set your MRP"] : ["", ""],
+    packGrams: packGrams <= 0 ? ["error", "Must be greater than 0"] : ["", ""],
+  };
+
+  $$("[data-model]").forEach((input) => {
+    const label = input.closest("label");
+    const [level, message] = warnings[input.dataset.model] || ["", ""];
+    label?.classList.toggle("warn", level === "warn");
+    label?.classList.toggle("error", level === "error");
+    const note = $(`[data-note="${input.dataset.model}"]`);
+    if (note) note.textContent = message;
+  });
+}
+
+function colorMetric(selector, value) {
+  const el = $(selector);
+  el.classList.toggle("good", value >= 0);
+  el.classList.toggle("bad", value < 0);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function showToast(message) {
+  const toast = $("#toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2200);
+}
+
+function saveNamedProfile() {
+  const current = activeProfile();
+  const rawName = $("#profileName").value.trim();
+  const nextName = rawName || current.name || "Untitled profile";
+  // Warn if this would overwrite an existing profile with a different name
+  if (
+    state.profiles[nextName] &&
+    nextName !== state.activeProfile &&
+    !confirm(`A profile named "${nextName}" already exists. Overwrite it?`)
+  ) return;
+  const copy = structuredClone(current);
+  copy.name = nextName;
+  state.profiles[nextName] = copy;
+  state.activeProfile = nextName;
+  render();
+  showToast("Profile saved");
+}
+
+function deleteCurrentProfile() {
+  const names = Object.keys(state.profiles);
+  if (names.length <= 1) {
+    showToast("Keep at least one profile");
+    return;
+  }
+
+  if (!confirm(`Delete profile "${state.activeProfile}"?`)) return;
+  delete state.profiles[state.activeProfile];
+  state.activeProfile = Object.keys(state.profiles)[0];
+  $("#scenarioPrice").value = "";
+  render();
+  showToast("Profile deleted");
+}
+
+function exportCsv() {
+  const profile = activeProfile();
+  const result = calculate(profile);
+  const rows = [
+    ["Ingredient", "Percent", "Qty kg", "Rate", "Cost"],
+    ...result.ingredients.map((item) => [item.name, item.percent, item.qtyKg.toFixed(2), item.rate, item.cost.toFixed(2)]),
+    [],
+    ["Metric", "Value"],
+    ["Packs", result.packCount],
+    ["Revenue", result.revenue.toFixed(2)],
+    ["Raw material", result.rawMaterial.toFixed(2)],
+    ["Packaging", result.packaging.toFixed(2)],
+    ["Labour (overheads)", (result.packCount * result.labourPerPack).toFixed(2)],
+    ["Electricity (overheads)", (result.packCount * result.electricityPerPack).toFixed(2)],
+    ["Misc (overheads)", (result.packCount * result.miscPerPack).toFixed(2)],
+    ["Total overheads", result.overheads.toFixed(2)],
+    ["Total cost", result.totalCost.toFixed(2)],
+    ["Net profit", result.netProfit.toFixed(2)],
+    ["Margin", `${result.margin.toFixed(1)}%`],
+    ["Breakeven packs", result.breakeven],
+    ["Required MRP", result.requiredMrp.toFixed(2)],
+  ];
+  const csv = rows.map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${profile.name.replaceAll(" ", "-").toLowerCase()}-batch-profit.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function buildReportHtml(profile, result) {
+  const ingredientRows = result.ingredients
+    .map(
+      (item) => `
+        <tr>
+          <td>${escapeHtml(item.name)}</td>
+          <td>${number(item.percent, 1)}%</td>
+          <td>${number(item.qtyKg, 2)} kg</td>
+          <td>${money(item.rate)}</td>
+          <td>${money(item.cost)}</td>
+        </tr>`
+    )
+    .join("");
+  const breakevenPct = result.packCount ? (result.breakeven / result.packCount) * 100 : 0;
+  const packOverhead = result.labourPerPack + result.electricityPerPack + result.miscPerPack;
+  const generatedAt = new Date().toLocaleString("en-IN", {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Batch Profit Report - ${escapeHtml(profile.name)}</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #f3f6fb;
+    color: #111827;
+    font-family: Inter, Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    line-height: 1.25;
+  }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 8mm;
+    background: #ffffff;
+  }
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    align-items: start;
+    padding: 12px 14px;
+    border-radius: 10px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #1d4ed8, #0f766e);
+  }
+  h1 {
+    margin: 0;
+    font-size: 23px;
+    letter-spacing: 0;
+  }
+  .subtitle {
+    margin-top: 3px;
+    color: rgba(255,255,255,.74);
+    font-size: 10px;
+  }
+  .hero-kpi {
+    display: grid;
+    grid-template-columns: repeat(2, 34mm);
+    gap: 6px;
+  }
+  .hero-pill {
+    padding: 7px 8px;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 8px;
+    background: rgba(255,255,255,.12);
+  }
+  .label {
+    display: block;
+    margin-bottom: 2px;
+    color: #64748b;
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+  .hero-pill .label { color: rgba(255,255,255,.64); }
+  .value {
+    display: block;
+    font-size: 12px;
+    font-weight: 850;
+    white-space: nowrap;
+  }
+  .hero-pill .value { color: #ffffff; }
+  .section-title {
+    margin: 9px 0 5px;
+    color: #334155;
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+  .params {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+  }
+  .param, .summary-card, .small-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    padding: 6px 7px;
+  }
+  .param .value, .small-card .value { font-size: 10.5px; }
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .summary-card {
+    padding: 8px 9px;
+  }
+  .summary-card .value {
+    font-size: 15px;
+  }
+  .blue { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+  .green { background: #ecfdf5; border-color: #bbf7d0; color: #15803d; }
+  .orange { background: #fff7ed; border-color: #fed7aa; color: #c2410c; }
+  .purple { background: #f5f3ff; border-color: #ddd6fe; color: #6d28d9; }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1.28fr .72fr;
+    gap: 8px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+  th {
+    padding: 5px 6px;
+    background: #eef2f7;
+    color: #64748b;
+    font-size: 7.5px;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+  th:first-child, td:first-child { text-align: left; }
+  td {
+    padding: 4px 6px;
+    border-bottom: 1px solid #eef2f7;
+    font-weight: 700;
+    text-align: right;
+  }
+  tbody tr:nth-child(even) td { background: #fbfdff; }
+  .cost-list {
+    display: grid;
+    gap: 5px;
+  }
+  .cost-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+  }
+  .cost-row strong { font-size: 11px; }
+  .total-row {
+    color: #ffffff;
+    border-color: transparent;
+    background: #111827;
+  }
+  .breakeven {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    margin-top: 8px;
+    padding: 9px 11px;
+    border-radius: 9px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #111827, #334155);
+  }
+  .breakeven .label { color: rgba(255,255,255,.52); }
+  .breakeven .value { font-size: 17px; }
+  .small-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid #e5e7eb;
+    color: #94a3b8;
+    font-size: 8px;
+  }
+  @page { size: A4 portrait; margin: 0; }
+  @media print {
+    body { background: #ffffff; }
+    .page { width: auto; min-height: auto; padding: 8mm; }
+    .hero, .breakeven, .total-row, .blue, .green, .orange, .purple {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
 </style>
 </head>
 <body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <h1>Batch Profit Report</h1>
+        <div class="subtitle">Profile: <strong>${escapeHtml(profile.name)}</strong> · Generated: ${generatedAt}</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-pill"><span class="label">Cost / pack</span><span class="value">${money(result.costPerPack, 2)}</span></div>
+        <div class="hero-pill"><span class="label">Profit / pack</span><span class="value">${money(result.profitPerPack, 2)}</span></div>
+        <div class="hero-pill"><span class="label">Margin</span><span class="value">${number(result.margin, 1)}%</span></div>
+        <div class="hero-pill"><span class="label">Raw cost</span><span class="value">${money(result.rawMaterial)}</span></div>
+      </div>
+    </section>
 
-<div class="toast" id="toast"></div>
+    <div class="section-title">Batch parameters</div>
+    <section class="params">
+      <div class="param"><span class="label">Batch kg</span><span class="value">${number(result.batchKg, 3)}</span></div>
+      <div class="param"><span class="label">MRP</span><span class="value">${money(result.mrp, 2)}</span></div>
+      <div class="param"><span class="label">Retail</span><span class="value">${number(result.retailPercent, 1)}%</span></div>
+      <div class="param"><span class="label">Waste</span><span class="value">${number(result.wastePercent, 1)}%</span></div>
+      <div class="param"><span class="label">Pack g</span><span class="value">${number(result.packGrams)}</span></div>
+      <div class="param"><span class="label">Pack</span><span class="value">${money(result.packCost, 2)}</span></div>
+      <div class="param"><span class="label">Labour</span><span class="value">${money(result.labourPerPack, 2)}</span></div>
+      <div class="param"><span class="label">Electric</span><span class="value">${money(result.electricityPerPack, 2)}</span></div>
+      <div class="param"><span class="label">Misc</span><span class="value">${money(result.miscPerPack, 2)}</span></div>
+      <div class="param"><span class="label">Target</span><span class="value">${number(result.targetMargin, 1)}%</span></div>
+    </section>
 
-<!-- HEADER -->
-<div class="app-header">
-  <div class="app-title">Batch <span>Profit</span></div>
-  <div class="header-right">
-    <button class="icon-btn" id="dmBtn" onclick="toggleDark()">🌙 Dark</button>
-  </div>
-</div>
+    <div class="section-title">Summary</div>
+    <section class="summary">
+      <div class="summary-card blue"><span class="label">Effective batch</span><span class="value">${number(result.effectiveBatchKg, 2)} kg</span></div>
+      <div class="summary-card purple"><span class="label">Total packs</span><span class="value">${number(result.packCount)}</span></div>
+      <div class="summary-card green"><span class="label">Revenue</span><span class="value">${money(result.revenue)}</span></div>
+      <div class="summary-card orange"><span class="label">Net profit</span><span class="value">${money(result.netProfit)}</span></div>
+    </section>
 
-<!-- PROFILE BAR -->
-<div class="card" style="padding:12px 14px; margin-bottom:10px;">
-  <div class="card-title" style="margin-bottom:8px;">📁 Profiles <span class="card-title-badge" id="profileCount">1 saved</span></div>
-  <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-    <div style="display:flex; gap:8px; align-items:center; width:100%; flex-wrap:wrap;">
-    <select class="profile-select" id="profileSelect" onchange="loadProfile(this.value)"></select>
-    <div class="profile-new-wrap">
-      <input class="profile-new-input" id="profileNameInput" placeholder="New profile name…" maxlength="30">
-      <button class="btn-sm" onclick="saveAsProfile()">💾 Save</button>
-      <button class="btn-sm danger" onclick="deleteProfile()">🗑</button>
+    <div class="grid-2">
+      <section>
+        <div class="section-title">Ingredients</div>
+        <table>
+          <thead><tr><th>Ingredient</th><th>% mix</th><th>Qty</th><th>Rate</th><th>Cost</th></tr></thead>
+          <tbody>${ingredientRows}</tbody>
+        </table>
+      </section>
+      <section>
+        <div class="section-title">Cost breakdown</div>
+        <div class="cost-list">
+          <div class="cost-row"><span>Raw material</span><strong>${money(result.rawMaterial)}</strong></div>
+          <div class="cost-row"><span>Packaging</span><strong>${money(result.packaging)}</strong></div>
+          <div class="cost-row"><span>Overheads</span><strong>${money(result.overheads)}</strong></div>
+          <div class="cost-row total-row"><span>Total production cost</span><strong>${money(result.totalCost)}</strong></div>
+        </div>
+        <div class="breakeven">
+          <div><span class="label">Breakeven point</span><span>packs needed to cover all costs</span></div>
+          <div style="text-align:right"><span class="value">${number(result.breakeven)} packs</span><span>${number(breakevenPct, 0)}% of batch</span></div>
+        </div>
+      </section>
     </div>
+
+    <section class="small-grid">
+      <div class="small-card"><span class="label">Cost / kg</span><span class="value">${result.effectiveBatchKg ? money(result.totalCost / result.effectiveBatchKg, 1) : money(0)}</span></div>
+      <div class="small-card"><span class="label">Revenue / kg</span><span class="value">${result.effectiveBatchKg ? money(result.revenue / result.effectiveBatchKg, 1) : money(0)}</span></div>
+      <div class="small-card"><span class="label">Profit / kg</span><span class="value">${result.effectiveBatchKg ? money(result.netProfit / result.effectiveBatchKg, 1) : money(0)}</span></div>
+      <div class="small-card"><span class="label">Seller price</span><span class="value">${money(result.salePrice, 2)} / pack</span></div>
+      <div class="small-card"><span class="label">Overhead / pack</span><span class="value">${money(packOverhead, 2)}</span></div>
+      <div class="small-card"><span class="label">Required MRP</span><span class="value">${money(result.requiredMrp, 2)}</span></div>
+    </section>
+
+    <div class="footer">
+      <span>Batch Profit Studio</span>
+      <span>Formula total: ${number(result.formulaTotal, 1)}%</span>
     </div>
-  </div>
-</div>
-
-<!-- TOP KPI BAR -->
-<div id="topBar">
-  <div class="kpi"><div class="kpi-label">Cost/Pack</div><div class="kpi-value kv-red" id="costTop">₹0</div></div>
-  <div class="kpi"><div class="kpi-label">Profit/Pack</div><div class="kpi-value kv-green" id="profitTop">₹0</div></div>
-  <div class="kpi"><div class="kpi-label">Margin</div><div class="kpi-value" id="profitPct">0%</div></div>
-  <div class="kpi">
-    <div class="kpi-label">Packs <span style="font-size:9px;opacity:0.7;cursor:help;" title="Edit to calculate Batch kg">✏️</span></div>
-    <input type="number" class="kpi-value" id="packsTopInput" value="0" oninput="onPacksInput()" style="width:100%; text-align:center; background:transparent; border:none; color:#fff; outline:none; -moz-appearance:textfield; padding:0;">
-  </div>
-  <div class="kpi"><div class="kpi-label">Raw Cost</div><div class="kpi-value" id="purchaseTop">₹0</div></div>
-</div>
-
-<!-- BATCH PARAMETERS -->
-<div class="card">
-  <div class="card-title">⚙️ Batch Parameters</div>
-  <div class="inputGrid" style="margin-bottom:20px;">
-    <div class="inputBox" id="box_batch"><label>Batch kg</label><input id="batch" value="200" oninput="onInput()"><div class="field-hint" id="hint_batch"></div></div>
-    <div class="inputBox" id="box_mrp"><label>MRP ₹</label><input id="mrp" value="40" oninput="onInput()"><div class="field-hint" id="hint_mrp"></div></div>
-    <div class="inputBox" id="box_retail"><label>Retail %</label><input id="retail" value="40" oninput="onInput()"><div class="field-hint" id="hint_retail"></div></div>
-    <div class="inputBox" id="box_waste"><label>Waste %</label><input id="waste" value="5" oninput="onInput()"><div class="field-hint" id="hint_waste"></div></div>
-    <div class="inputBox" id="box_packSize"><label>Pack g</label><input id="packSize" value="20" oninput="onInput()"><div class="field-hint" id="hint_packSize"></div></div>
-    <div class="inputBox" id="box_pack"><label>Pack ₹</label><input id="pack" value="5" oninput="onInput()"><div class="field-hint" id="hint_pack"></div></div>
-    <div class="inputBox" id="box_labour"><label>Labour ₹</label><input id="labour" value="2" oninput="onInput()"><div class="field-hint" id="hint_labour"></div></div>
-    <div class="inputBox" id="box_electricity"><label>Electric ₹</label><input id="electricity" value="0.5" oninput="onInput()"><div class="field-hint" id="hint_electricity"></div></div>
-    <div class="inputBox" id="box_misc"><label>Misc ₹</label><input id="misc" value="0.5" oninput="onInput()"><div class="field-hint" id="hint_misc"></div></div>
-  </div>
-
-  <!-- TARGET MARGIN -->
-  <div class="target-row">
-    <div class="target-label">🎯 Target Margin</div>
-    <div class="target-input-wrap">
-      <input class="target-input" id="targetMargin" value="30" min="1" max="99" oninput="onInput()">
-      <span class="target-pct-sym">%</span>
-    </div>
-    <div class="target-result">
-      <span style="font-size:12px; color:var(--sub);">Requires MRP ≥</span>
-      <span class="target-mrp-pill" id="targetMrpPill">₹—</span>
-      <span class="target-status" id="targetStatus"></span>
-    </div>
-  </div>
-</div>
-
-<!-- INGREDIENTS -->
-<div class="card">
-  <div class="card-title">🧪 Ingredients</div>
-
-  <div class="mbar-wrap">
-    <div class="mbar-top">
-      <div class="mbar-title">Profit Margin</div>
-      <div class="mbar-pct" id="mbarPct">0%</div>
-    </div>
-    <div class="mbar-track"><div class="mbar-fill" id="mbarFill"></div></div>
-    <div class="mbar-labels">
-      <span style="color:var(--sub)">0%</span>
-      <span style="color:#ef4444">Poor &lt;15</span>
-      <span style="color:#f59e0b">Good 25</span>
-      <span style="color:#16a34a">Great 40+</span>
-    </div>
-  </div>
-
-  <div class="table-wrap">
-    <table id="table">
-      <colgroup>
-        <col class="c-name"><col class="c-pct"><col class="c-qty">
-        <col class="c-price"><col class="c-cost"><col class="c-del">
-      </colgroup>
-    </table>
-  </div>
-
-  <div class="table-footer">
-    <div class="pct-pill pct-ok" id="pctPill">
-      <span id="pctIcon">✓</span><span id="pctTotal">100.0%</span>
-    </div>
-    <button class="add-btn" onclick="addIngredient()">＋ Add</button>
-  </div>
-
-</div>
-
-<!-- SUMMARY -->
-<div class="card" id="summaryCard">
-  <div class="card-title">📊 Summary</div>
-
-  <div class="stat-row">
-    <div class="stat-pill sp-blue"><div class="stat-label">Eff. Batch</div><div class="stat-val" id="effBatch">—</div></div>
-    <div class="stat-pill sp-violet"><div class="stat-label">Total Packs</div><div class="stat-val" id="packs">—</div></div>
-    <div class="stat-pill sp-green"><div class="stat-label">Revenue</div><div class="stat-val" id="revenue">₹—</div></div>
-    <div class="stat-pill sp-orange"><div class="stat-label">Net Profit</div><div class="stat-val" id="totalProfit">₹—</div></div>
-  </div>
-
-  <div class="extra-row">
-    <div class="extra-pill"><div class="extra-label">Cost per kg</div><div class="extra-val" id="costPerKg">₹—</div></div>
-    <div class="extra-pill"><div class="extra-label">Revenue per kg</div><div class="extra-val" id="revPerKg">₹—</div></div>
-    <div class="extra-pill"><div class="extra-label">Profit per kg</div><div class="extra-val" id="profitPerKg">₹—</div></div>
-  </div>
-
-  <div class="be-strip">
-    <div class="be-left">
-      <div class="be-icon">🎯</div>
-      <div><div class="be-lbl">Breakeven Point</div><div class="be-sub">packs to cover all costs</div></div>
-    </div>
-    <div class="be-right">
-      <div class="be-val"><span id="beVal">—</span> packs</div>
-      <div class="be-pct" id="bePct">—% of batch</div>
-    </div>
-  </div>
-
-  <div class="breakdown-grid">
-    <div class="brow"><div class="brow-lbl"><div class="brow-dot" style="background:#f87171"></div>Raw Material</div><div class="brow-val" id="rawCost">₹0</div></div>
-    <div class="brow"><div class="brow-lbl"><div class="brow-dot" style="background:#818cf8"></div>Packaging</div><div class="brow-val" id="packCost">₹0</div></div>
-    <div class="brow"><div class="brow-lbl"><div class="brow-dot" style="background:#34d399"></div>Overhead</div><div class="brow-val" id="overheadCost">₹0</div></div>
-    <div class="brow total"><div class="brow-lbl"><div class="brow-dot"></div>Total Production Cost</div><div class="brow-val" id="totalProd">₹0</div></div>
-  </div>
-
-  <div class="export-row">
-    <button class="export-btn pdf" id="exportPdfBtn" onclick="exportPDF()">📄 Export Full PDF</button>
-    <button class="export-btn wa"  id="exportWaBtn"  onclick="shareWhatsApp()">💬 Share Summary</button>
-  </div>
-</div>
-
-<script>
-/* ═══════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════ */
-let ingredients = [
-  {name:"Dates",  pct:55, price:220},
-  {name:"Almond", pct:8,  price:650},
-  {name:"Cashew", pct:8,  price:850},
-  {name:"Peanut", pct:14, price:200},
-  {name:"Pista",  pct:5,  price:1400},
-  {name:"Ghee",   pct:5,  price:650},
-  {name:"Honey",  pct:5,  price:250}
-];
-let currentGst = 0;
-let currentProfile = "Default";
-let profiles = {};
-
-const PIE_COLORS = ["#f87171","#fb923c","#fbbf24","#34d399","#60a5fa","#a78bfa","#f472b6","#818cf8","#4ade80","#38bdf8"]; // kept for potential future use
-
-const el  = id => document.getElementById(id);
-const v   = id => { const n = parseFloat(el(id).value); return isNaN(n) ? 0 : n; };
-const clamp = (val,min,max) => Math.max(min, Math.min(max, val));
-const fmt   = n => (!isFinite(n)||isNaN(n)) ? "—" : Math.round(n).toLocaleString("en-IN");
-const fmtD  = (n,d) => (!isFinite(n)||isNaN(n)) ? "—" : n.toFixed(d);
-const escH  = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-
-/* ═══════════════════════════════════════════
-   PROFILES
-═══════════════════════════════════════════ */
-function getParamValues() {
-  return ["batch","mrp","retail","waste","packSize","pack","labour","electricity","misc","targetMargin"]
-    .reduce((o,k)=>{ o[k]=el(k).value; return o; }, {});
-}
-
-function initProfiles() {
-  try {
-    const saved = JSON.parse(localStorage.getItem("bpc_profiles") || "{}");
-    profiles = saved;
-  } catch(e) { profiles = {}; }
-
-  // Migrate old single save
-  try {
-    const op = localStorage.getItem("bpc_params");
-    const oi = localStorage.getItem("bpc_ingredients");
-    if (op && !profiles["Default"]) {
-      profiles["Default"] = { params: JSON.parse(op), ingredients: JSON.parse(oi)||ingredients, gst: 0 };
-      persistProfiles();
-    }
-  } catch(e) {}
-
-  if (!Object.keys(profiles).length) {
-    profiles["Default"] = { params: getParamValues(), ingredients: [...ingredients.map(i=>({...i}))], gst: 0 };
-    persistProfiles();
-  }
-  currentProfile = Object.keys(profiles)[0];
-  applyProfile(currentProfile);
-  rebuildProfileSelect();
-}
-
-function persistProfiles() {
-  try { localStorage.setItem("bpc_profiles", JSON.stringify(profiles)); } catch(e){}
-}
-
-function rebuildProfileSelect() {
-  const sel = el("profileSelect");
-  sel.innerHTML = "";
-  Object.keys(profiles).forEach(name => {
-    const opt = document.createElement("option");
-    opt.value = name; opt.textContent = name;
-    if (name === currentProfile) opt.selected = true;
-    sel.appendChild(opt);
-  });
-  el("profileCount").textContent = Object.keys(profiles).length + " saved";
-}
-
-function loadProfile(name) {
-  // auto-save current before switching
-  autoSaveCurrent();
-  currentProfile = name;
-  applyProfile(name);
-  showToast("📁 Loaded: " + name);
-}
-
-function applyProfile(name) {
-  const p = profiles[name];
-  if (!p) return;
-  const params = p.params || {};
-  ["batch","mrp","retail","waste","packSize","pack","labour","electricity","misc","targetMargin"].forEach(k => {
-    if (el(k) && params[k] !== undefined) el(k).value = params[k];
-  });
-  if (p.ingredients && Array.isArray(p.ingredients) && p.ingredients.length) ingredients = p.ingredients;
-  currentGst = p.gst || 0;
-  renderTable();
-  calc();
-}
-
-function autoSaveCurrent() {
-  if (!profiles[currentProfile]) return;
-  profiles[currentProfile] = { params: getParamValues(), ingredients: [...ingredients.map(i=>({...i}))], gst: currentGst };
-  persistProfiles();
-}
-
-function saveAsProfile() {
-  const raw = el("profileNameInput").value.trim();
-  const name = raw || currentProfile;
-  profiles[name] = { params: getParamValues(), ingredients: [...ingredients.map(i=>({...i}))], gst: currentGst };
-  persistProfiles();
-  currentProfile = name;
-  el("profileNameInput").value = "";
-  rebuildProfileSelect();
-  el("profileSelect").value = name;
-  showToast("✅ Saved: " + name);
-  el("profileCount").textContent = Object.keys(profiles).length + " saved";
-}
-
-function deleteProfile() {
-  const keys = Object.keys(profiles);
-  if (keys.length <= 1) { showToast("⚠️ Can't delete last profile"); return; }
-  if (!confirm(`Delete profile "${currentProfile}"?`)) return;
-  delete profiles[currentProfile];
-  persistProfiles();
-  currentProfile = Object.keys(profiles)[0];
-  applyProfile(currentProfile);
-  rebuildProfileSelect();
-  showToast("🗑 Deleted");
-}
-
-/* ═══════════════════════════════════════════
-   INPUT SAVE + DEBOUNCE
-═══════════════════════════════════════════ */
-let saveTimer = null;
-function onInput() {
-  calc();
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => { autoSaveCurrent(); rebuildProfileSelect(); }, 900);
-}
-
-function onPacksInput() {
-  const packs = parseInt(el("packsTopInput").value) || 0;
-  const waste = clamp(v("waste"),0,99.99) / 100;
-  const packSize = Math.max(0.001, v("packSize"));
-  
-  if (packs > 0) {
-    const newBatch = (packs * packSize) / (1000 * (1-waste));
-    el("batch").value = parseFloat(newBatch.toFixed(3));
-  } else {
-    el("batch").value = 0;
-  }
-  
-  calc();
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => { autoSaveCurrent(); rebuildProfileSelect(); }, 900);
-}
-
-/* ═══════════════════════════════════════════
-   TABLE
-═══════════════════════════════════════════ */
-function buildColgroup() {
-  const cg = document.createElement("colgroup");
-  ["c-name","c-pct","c-qty","c-price","c-cost","c-del"].forEach(cls=>{
-    const c=document.createElement("col"); c.className=cls; cg.appendChild(c);
-  });
-  return cg;
-}
-function renderTable() {
-  const t = el("table");
-  while (t.firstChild) t.removeChild(t.firstChild);
-  t.appendChild(buildColgroup());
-  const thead = document.createElement("thead");
-  thead.innerHTML=`<tr><th style="text-align:left">Item</th><th>%</th><th>Qty kg</th><th>₹/kg</th><th>Cost</th><th></th></tr>`;
-  t.appendChild(thead);
-  const tbody = document.createElement("tbody");
-  tbody.id="tbody";
-  ingredients.forEach((ing,i)=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td><input class="nameInput" value="${escH(ing.name)}" oninput="updateName(${i},this.value)"></td>
-      <td><input class="numInput" value="${ing.pct}" oninput="updatePct(${i},this.value)"></td>
-      <td><span class="qty-text" id="q${i}">—</span></td>
-      <td><input class="numInput" value="${ing.price}" oninput="updatePrice(${i},this.value)"></td>
-      <td><span class="cost-text" id="c${i}">—</span></td>
-      <td><button class="del-btn" onclick="removeIngredient(${i})">×</button></td>`;
-    tbody.appendChild(tr);
-  });
-  t.appendChild(tbody);
-}
-function addIngredient()     { ingredients.push({name:"New",pct:0,price:0}); renderTable(); calc(); autoSaveCurrent(); }
-function removeIngredient(i) {
-  if (ingredients.length<=1){ showToast("⚠️ Need at least one ingredient"); return; }
-  ingredients.splice(i,1); renderTable(); calc(); autoSaveCurrent();
-}
-function updateName(i,val)   { ingredients[i].name=val; autoSaveCurrent(); }
-function updatePct(i,val)    { ingredients[i].pct=Math.max(0,parseFloat(val)||0); calc(); autoSaveCurrent(); }
-function updatePrice(i,val)  { ingredients[i].price=Math.max(0,parseFloat(val)||0); calc(); autoSaveCurrent(); }
-
-/* ═══════════════════════════════════════════
-   FIELD WARNINGS
-═══════════════════════════════════════════ */
-function setFieldState(id, state, msg) {
-  const box  = el("box_"+id);
-  const hint = el("hint_"+id);
-  if (!box || !hint) return;
-  box.classList.remove("warn-field","err-field");
-  hint.className = "field-hint";
-  hint.textContent = "";
-  if (state==="warn") { box.classList.add("warn-field"); hint.textContent=msg; }
-  if (state==="err")  { box.classList.add("err-field");  hint.textContent=msg; hint.className="field-hint err"; }
-}
-
-function runFieldWarnings() {
-  const waste  = v("waste");
-  const retail = v("retail");
-  const batch  = v("batch");
-  const mrp    = v("mrp");
-  const pack   = v("packSize");
-
-  setFieldState("waste",   waste>=50?"err":waste>=30?"warn":"", waste>=50?"⚠ Very high loss!":waste>=30?"High waste":"");
-  setFieldState("retail",  retail>=80?"err":retail>=65?"warn":"", retail>=80?"⚠ Leaves little margin":retail>=65?"High retail cut":"");
-  setFieldState("batch",   batch<=0?"err":"", batch<=0?"⚠ Must be > 0":"");
-  setFieldState("mrp",     mrp<=0?"err":"", mrp<=0?"⚠ Set your MRP":"");
-  setFieldState("packSize",pack<=0?"err":"", pack<=0?"⚠ Must be > 0":"");
-}
-
-/* ═══════════════════════════════════════════
-   MAIN CALC
-═══════════════════════════════════════════ */
-function calc() {
-  runFieldWarnings();
-
-  const batch    = Math.max(0.001, v("batch"));
-  const waste    = clamp(v("waste"),0,99.99) / 100;
-  const eff      = batch * (1-waste);
-  const packSize = Math.max(0.001, v("packSize"));
-  const packs    = (eff*1000) / packSize;
-  const retail   = clamp(v("retail"),0,99.99);
-  const mrp      = v("mrp");
-  const gstMult  = 1 + currentGst/100;
-  const mrpInclGst = mrp * gstMult;
-  const gstAmount  = mrp * (currentGst/100);
-  const realP    = mrp * (1 - retail/100);  // net to seller per pack after retail discount (no GST impact on seller price here)
-
-  // Ingredient costs
-  let raw = 0;
-  const ingCosts = [];
-  ingredients.forEach((ing,i)=>{
-    const qty  = batch * (ing.pct/100);
-    const cost = qty * ing.price;
-    raw += cost;
-    ingCosts.push({name:ing.name, cost});
-    const qEl=el("q"+i), cEl=el("c"+i);
-    if (qEl) qEl.innerText=qty.toFixed(2);
-    if (cEl) cEl.innerText="₹"+fmt(cost);
-  });
-
-  const pkCost = packs * v("pack");
-  const ohCost = packs * (v("labour") + v("electricity") + v("misc"));
-  const total  = raw + pkCost + ohCost;
-  const rev    = packs * realP;
-  const profit = rev - total;
-  const ppp    = packs>0 ? profit/packs : 0;
-  const cpp    = packs>0 ? total/packs  : 0;
-  const margin = realP>0 ? (ppp/realP)*100 : 0;
-
-  // ── KPI bar ──
-  const mc = margin<15?"kv-red":margin<25?"kv-yellow":"kv-green";
-  el("profitPct").className = "kpi-value " + mc;
-  el("profitPct").innerText = fmtD(margin,1)+"%";
-  el("profitTop").innerText = "₹"+fmtD(ppp,1);
-  el("costTop").innerText   = "₹"+fmtD(cpp,1);
-  if (document.activeElement !== el("packsTopInput")) {
-    el("packsTopInput").value = Math.round(packs);
-  }
-  el("purchaseTop").innerText="₹"+fmt(raw);
-
-  // ── Margin bar ──
-  const bc = margin<15?"#ef4444":margin<25?"#f59e0b":"#16a34a";
-  el("mbarFill").style.width      = clamp(margin,0,60)/60*100+"%";
-  el("mbarFill").style.background = bc;
-  el("mbarPct").innerText   = fmtD(margin,1)+"%";
-  el("mbarPct").style.color = bc;
-
-  // ── % total pill ──
-  const tp = ingredients.reduce((s,i)=>s+i.pct,0);
-  const ok = Math.abs(tp-100)<0.5;
-  el("pctTotal").innerText = fmtD(tp,1)+"%";
-  el("pctIcon").innerText  = ok?"✓":tp<100?"↓":"↑";
-  el("pctPill").className  = "pct-pill "+(ok?"pct-ok":tp<100?"pct-warn":"pct-err");
-
-  // ── Target margin ──
-  const tgt = clamp(v("targetMargin"),0,99.99)/100;
-  // realP = (total/packs) / (1-tgt) needed. So: MRP / (1 - retail/100) = reqRealP => MRP = reqRealP * (1-retail/100)
-  const reqCpp = total>0 && packs>0 ? total/packs : 0;
-  const reqRealP = tgt<1 && reqCpp>0 ? reqCpp/(1-tgt) : 0;
-  const reqMrp   = reqRealP > 0 ? reqRealP / (1-retail/100) : 0;
-  const tgtPill  = el("targetMrpPill");
-  const tgtStat  = el("targetStatus");
-  if (reqMrp > 0) {
-    tgtPill.textContent = "₹"+fmtD(reqMrp,2);
-    const above = mrp >= reqMrp;
-    tgtPill.className = "target-mrp-pill " + (above?"above":"below");
-    tgtStat.textContent = above ? "✓ MRP achieves target" : "↑ Raise MRP by ₹"+fmtD(reqMrp-mrp,2);
-    tgtStat.className   = "target-status " + (above?"above":"below");
-  } else {
-    tgtPill.textContent = "₹—";
-    tgtPill.className = "target-mrp-pill";
-    tgtStat.textContent = "";
-  }
-
-  // ── Summary ──
-  el("effBatch").innerText    = fmtD(eff, 2)+" kg";
-  el("packs").innerText       = fmt(packs);
-  el("revenue").innerText     = "₹"+fmt(rev);
-  el("totalProfit").innerText = "₹"+fmt(profit);
-  el("costPerKg").innerText   = eff>0?"₹"+fmtD(total/eff,1):"—";
-  el("revPerKg").innerText    = eff>0?"₹"+fmtD(rev/eff,1):"—";
-  el("profitPerKg").innerText = eff>0?"₹"+fmtD(profit/eff,1):"—";
-
-  // ── Breakeven ──
-  if (realP>0) {
-    const be = Math.ceil(total/realP);
-    el("beVal").innerText = Math.max(0,be).toLocaleString("en-IN");
-    el("bePct").innerText = packs>0 ? ((Math.max(0,be)/packs)*100).toFixed(0)+"% of batch" : "—";
-  } else {
-    el("beVal").innerText = "—";
-    el("bePct").innerText = "Set MRP to calculate";
-  }
-
-  // ── Breakdown ──
-  el("rawCost").innerText      = "₹"+fmt(raw);
-  el("packCost").innerText     = "₹"+fmt(pkCost);
-  el("overheadCost").innerText = "₹"+fmt(ohCost);
-  el("totalProd").innerText    = "₹"+fmt(total);
-
-  // Expose for export
-  window._lastCalc = { batch, eff, packs, raw, pkCost, ohCost, total, rev, profit, ppp, cpp, margin,
-    mrp, mrpInclGst, gstAmount, realP, reqMrp, ingCosts, currentGst,
-    retail, waste:waste*100, packSize };
-}
-
-/* ═══════════════════════════════════════════
-   DARK MODE
-═══════════════════════════════════════════ */
-function toggleDark() {
-  const d = document.body.classList.toggle("dark");
-  el("dmBtn").innerText = d?"☀️ Light":"🌙 Dark";
-  try { localStorage.setItem("dm",d?"1":"0"); } catch(e){}
-}
-try {
-  if (localStorage.getItem("dm")==="1") {
-    document.body.classList.add("dark");
-    el("dmBtn").innerText="☀️ Light";
-  }
-} catch(e){}
-
-/* ═══════════════════════════════════════════
-   PDF EXPORT — full print window
-═══════════════════════════════════════════ */
-function exportPDF() {
-  const btn = el("exportPdfBtn");
-  btn.classList.add("loading"); btn.innerHTML="⏳ Preparing…";
-  const c = window._lastCalc || {};
-  const profileName = currentProfile;
-  const isDark = document.body.classList.contains("dark");
-
-  // Build ingredients table rows
-  const ingRows = ingredients.map((ing,i) => {
-    const qty  = (Math.max(0.001,v("batch")) * (ing.pct/100));
-    const cost = qty * ing.price;
-    return `<tr>
-      <td>${escH(ing.name)}</td>
-      <td>${ing.pct}%</td>
-      <td>${qty.toFixed(2)} kg</td>
-      <td>₹${ing.price.toLocaleString("en-IN")}</td>
-      <td>₹${fmt(cost)}</td>
-    </tr>`;
-  }).join("");
-
-  const html = `<!DOCTYPE html><html><head>
-<meta charset="UTF-8">
-<title>Batch Profit Report — ${escH(profileName)}</title>
-<style>
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family: Arial, Helvetica, sans-serif; font-size:11px; color:#111; background:#fff; padding:16px 20px; }
-  h1 { font-size:17px; font-weight:800; color:#1a1a2e; margin-bottom:2px; }
-  .sub { font-size:10px; color:#666; margin-bottom:10px; }
-  h2 { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#555; margin:10px 0 5px; border-bottom:1px solid #e5e7eb; padding-bottom:3px; }
-  /* PARAMS — single row of 9 */
-  .params-grid { display:grid; grid-template-columns:repeat(9,1fr); gap:5px; margin-bottom:8px; }
-  .param-item { background:#f9fafb; border:1px solid #e5e7eb; border-radius:6px; padding:5px 7px; }
-  .param-label { font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#9ca3af; margin-bottom:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .param-val { font-family:monospace; font-size:11px; font-weight:700; color:#111; white-space:nowrap; }
-  .warn { color:#d97706; }
-  /* TABLES */
-  table { width:100%; border-collapse:collapse; margin-bottom:8px; }
-  th { background:#f3f4f6; padding:5px 7px; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#6b7280; text-align:left; border-bottom:1.5px solid #e5e7eb; }
-  th:not(:first-child) { text-align:right; }
-  td { padding:4px 7px; border-bottom:1px solid #f3f4f6; font-size:11px; }
-  td:not(:first-child) { text-align:right; font-family:monospace; font-weight:600; }
-  tbody tr:last-child td { border-bottom:none; }
-  .total-row { background:#0f1117; color:#fff; }
-  .total-row td { color:#fff; border:none; padding:5px 7px; }
-  /* SUMMARY PILLS — 7 in one row */
-  .summary-row { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-bottom:8px; }
-  .pill { border-radius:7px; padding:6px 8px; }
-  .pill-label { font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .pill-val { font-size:13px; font-weight:800; font-family:monospace; white-space:nowrap; }
-  .blue   { background:#eff6ff; color:#1d4ed8; }
-  .violet { background:#f5f3ff; color:#5b21b6; }
-  .green  { background:#f0fdf4; color:#15803d; }
-  .orange { background:#fff7ed; color:#c2410c; }
-  .grey   { background:#f9fafb; border:1px solid #e5e7eb; color:#374151; }
-  .red    { background:#fef2f2; color:#b91c1c; }
-  /* BREAKEVEN */
-  .be-box { background:#0f1117; border-radius:8px; padding:8px 14px; color:#fff; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-  .be-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:rgba(255,255,255,.4); }
-  .be-val { font-family:monospace; font-size:18px; font-weight:800; color:#fff; }
-  .cost-section { page-break-inside:avoid; break-inside:avoid; }
-  .footer { margin-top:10px; padding-top:8px; border-top:1px solid #e5e7eb; font-size:10px; color:#9ca3af; display:flex; justify-content:space-between; }
-  @media print {
-    body { padding:10px 14px; }
-    @page { margin:.8cm; size:A4 portrait; }
-    .be-box, .total-row { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    .blue,.violet,.green,.orange,.grey,.red { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    .cost-section { page-break-inside:avoid; break-inside:avoid; }
-  }
-</style></head><body>
-<h1>📦 Batch Profit Report</h1>
-<div class="sub">Profile: <strong>${escH(profileName)}</strong> &nbsp;·&nbsp; Generated: ${new Date().toLocaleString("en-IN")}</div>
-
-<h2>Batch Parameters</h2>
-<div class="params-grid">
-  <div class="param-item"><div class="param-label">Batch kg</div><div class="param-val">${v("batch")} kg</div></div>
-  <div class="param-item"><div class="param-label">MRP</div><div class="param-val">₹${v("mrp")}</div></div>
-  <div class="param-item"><div class="param-label">Retail %</div><div class="param-val">${v("retail")}%</div></div>
-  <div class="param-item"><div class="param-label">Waste %</div><div class="param-val">${v("waste")}%${v("waste")>=30?' <span class="warn">⚠</span>':''}</div></div>
-  <div class="param-item"><div class="param-label">Pack Size</div><div class="param-val">${v("packSize")} g</div></div>
-  <div class="param-item"><div class="param-label">Pack ₹</div><div class="param-val">₹${v("pack")}</div></div>
-  <div class="param-item"><div class="param-label">Labour ₹</div><div class="param-val">₹${v("labour")}</div></div>
-  <div class="param-item"><div class="param-label">Electric ₹</div><div class="param-val">₹${v("electricity")}</div></div>
-  <div class="param-item"><div class="param-label">Misc ₹</div><div class="param-val">₹${v("misc")}</div></div>
-</div>
-
-<h2>Ingredients (${ingredients.length} items)</h2>
-<table>
-  <thead><tr><th>Ingredient</th><th>% Mix</th><th>Qty</th><th>Rate</th><th>Cost</th></tr></thead>
-  <tbody>${ingRows}</tbody>
-  <tfoot><tr class="total-row"><td colspan="4"><strong>Total Raw Material</strong></td><td>₹${fmt(c.raw)}</td></tr></tfoot>
-</table>
-
-<div class="cost-section">
-<h2>Cost Breakdown</h2>
-<table>
-  <thead><tr><th>Category</th><th>Amount</th><th>Per Pack</th></tr></thead>
-  <tbody>
-    <tr><td>🔴 Raw Material</td><td>₹${fmt(c.raw)}</td><td>₹${c.packs>0?fmtD(c.raw/c.packs,2):"—"}</td></tr>
-    <tr><td>🟣 Packaging</td><td>₹${fmt(c.pkCost)}</td><td>₹${fmtD(v("pack"), 2)}</td></tr>
-    <tr><td>🟢 Overhead (Labour+Elec+Misc)</td><td>₹${fmt(c.ohCost)}</td><td>₹${fmtD(v("labour")+v("electricity")+v("misc"),2)}</td></tr>
-  </tbody>
-  <tfoot><tr class="total-row"><td><strong>Total Production Cost</strong></td><td>₹${fmt(c.total)}</td><td>₹${c.packs>0?fmtD(c.total/c.packs,2):"—"} / pack</td></tr></tfoot>
-</table>
-</div>
-
-<h2>Summary</h2>
-<div class="summary-row">
-  <div class="pill blue"><div class="pill-label">Eff. Batch</div><div class="pill-val">${fmtD(c.eff, 2)} kg</div></div>
-  <div class="pill violet"><div class="pill-label">Total Packs</div><div class="pill-val">${fmt(c.packs)}</div></div>
-  <div class="pill green"><div class="pill-label">Revenue</div><div class="pill-val">₹${fmt(c.rev)}</div></div>
-  <div class="pill orange"><div class="pill-label">Net Profit</div><div class="pill-val">₹${fmt(c.profit)}</div></div>
-  <div class="pill grey"><div class="pill-label">Cost/kg</div><div class="pill-val">₹${c.eff>0?fmtD(c.total/c.eff,1):"—"}</div></div>
-  <div class="pill grey"><div class="pill-label">Rev/kg</div><div class="pill-val">₹${c.eff>0?fmtD(c.rev/c.eff,1):"—"}</div></div>
-  <div class="pill grey"><div class="pill-label">Margin</div><div class="pill-val">${fmtD(c.margin,1)}%</div></div>
-</div>
-<div class="be-box">
-  <div><div class="be-label">🎯 Breakeven Point</div><div style="font-size:9px;color:rgba(255,255,255,.25);margin-top:1px">packs needed to cover all costs</div></div>
-  <div style="text-align:right"><div class="be-val">${c.realP>0?Math.max(0,Math.ceil(c.total/c.realP)).toLocaleString("en-IN"):"—"} packs</div>
-  <div style="font-size:9px;color:rgba(255,255,255,.28);margin-top:1px">${c.packs>0&&c.realP>0?(Math.ceil(c.total/c.realP)/c.packs*100).toFixed(0)+"% of batch":""}</div></div>
-</div>
-
-<div class="footer">
-  <span>Batch Profit Calculator</span>
-  <span>${new Date().toLocaleDateString("en-IN",{year:"numeric",month:"long",day:"numeric"})}</span>
-</div>
-</body></html>`;
-
-  const w = window.open("","_blank","width=900,height=700");
-  if (!w) { showToast("❌ Allow popups to export PDF"); btn.classList.remove("loading"); btn.innerHTML="📄 Export Full PDF"; return; }
-  w.document.write(html);
-  w.document.close();
-  w.onload = () => {
-    setTimeout(() => { w.focus(); w.print(); }, 400);
-  };
-  setTimeout(() => { btn.classList.remove("loading"); btn.innerHTML="📄 Export Full PDF"; }, 1000);
-  showToast("📄 Print dialog opening…");
-}
-
-/* ═══════════════════════════════════════════
-   WHATSAPP / SHARE TEXT
-═══════════════════════════════════════════ */
-function shareWhatsApp() {
-  const c = window._lastCalc || {};
-  const topIng = [...ingredients].sort((a,b)=>b.pct-a.pct).slice(0,3).map(i=>i.name).join(", ");
-  const lines = [
-    `📦 *Batch Profit Summary* — ${currentProfile}`,
-    ``,
-    `*Batch:* ${v("batch")} kg | *Pack:* ${v("packSize")}g | *MRP:* ₹${v("mrp")}`,
-    `*Packs:* ${fmt(c.packs)} | *Waste:* ${v("waste")}%`,
-    ``,
-    `*Top Ingredients:* ${topIng}`,
-    ``,
-    `💰 *Financials*`,
-    `• Revenue:    ₹${fmt(c.rev)}`,
-    `• Total Cost: ₹${fmt(c.total)}`,
-    `• Net Profit: ₹${fmt(c.profit)}`,
-    `• Margin:     ${fmtD(c.margin,1)}%`,
-    `• Profit/Pack: ₹${fmtD(c.ppp,2)}`,
-    `• Cost/Pack:   ₹${fmtD(c.cpp,2)}`,
-    ``,
-    `🎯 Breakeven: ${c.realP>0?Math.max(0,Math.ceil(c.total/c.realP)).toLocaleString("en-IN"):"—"} packs`,
-    ``,
-    `_Generated by Batch Profit Calculator_`
-  ].join("\n");
-
-  // Copy to clipboard
-  try {
-    navigator.clipboard.writeText(lines).then(()=>showToast("📋 Copied to clipboard!")).catch(()=>{});
-  } catch(e) {}
-
-  // Try WhatsApp
-  const waUrl = "https://wa.me/?text=" + encodeURIComponent(lines);
-  const a = document.createElement("a"); a.href=waUrl; a.target="_blank";
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-}
-
-/* ═══════════════════════════════════════════
-   TOAST
-═══════════════════════════════════════════ */
-function showToast(msg) {
-  const t=el("toast"); t.textContent=msg; t.classList.add("show");
-  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),2800);
-}
-
-/* ═══════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════ */
-initProfiles();
-</script>
+  </main>
+  <script>
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        window.focus();
+        window.print();
+      }, 250);
+    });
+  <\/script>
 </body>
+</html>`;
+}
+
+async function shareSummary() {
+  const profile = activeProfile();
+  const result = calculate(profile);
+  const topIngredients = [...result.ingredients]
+    .sort((a, b) => b.percent - a.percent)
+    .slice(0, 3)
+    .map((item) => item.name)
+    .join(", ");
+  const text = [
+    `Batch Profit Summary - ${profile.name}`,
+    ``,
+    `Batch: ${number(profile.batchKg, 3)} kg | Pack: ${number(profile.packGrams)}g | MRP: ${money(profile.mrp, 2)}`,
+    `Packs: ${number(result.packCount)} | Waste: ${number(profile.wastePercent, 1)}%`,
+    `Top ingredients: ${topIngredients}`,
+    ``,
+    `Revenue: ${money(result.revenue)}`,
+    `Total cost: ${money(result.totalCost)}`,
+    `Net profit: ${money(result.netProfit)}`,
+    `Margin: ${number(result.margin, 1)}%`,
+    `Profit/pack: ${money(result.profitPerPack, 2)}`,
+    `Cost/pack: ${money(result.costPerPack, 2)}`,
+    `Breakeven: ${number(result.breakeven)} packs`,
+  ].join("\n");
+  if (navigator.share) {
+    await navigator.share({ title: "Batch Profit Summary", text });
+  } else {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast("Summary copied to clipboard");
+    } catch {
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(waUrl, "_blank", "noopener,noreferrer");
+      showToast("Opening WhatsApp share");
+    }
+  }
+}
+
+function printPdf() {
+  const profile = activeProfile();
+  const result = calculate(profile);
+  const reportWindow = window.open("", "_blank", "width=900,height=700");
+  if (!reportWindow) {
+    showToast("Allow popups to print the PDF report");
+    return;
+  }
+
+  reportWindow.document.open();
+  reportWindow.document.write(buildReportHtml(profile, result));
+  reportWindow.document.close();
+  showToast("Opening clean PDF report");
+}
+
+document.addEventListener("input", (event) => {
+  const profile = activeProfile();
+  const model = event.target.dataset.model;
+  if (model) {
+    profile[model] = normalizeModelValue(model, event.target.value);
+    renderMetrics(profile);
+    persist();
+  }
+
+  if (event.target.id === "editablePackCount") {
+    const packs = Number(event.target.value) || 0;
+    const wasteFactor = 1 - clamp(toNumber(profile.wastePercent), 0, 99.99) / 100;
+    const packGrams = Math.max(0.001, toNumber(profile.packGrams, 0.001));
+    profile.batchKg = wasteFactor > 0 ? Number(((packs * packGrams) / (1000 * wasteFactor)).toFixed(3)) : 0;
+    const batchInput = $('[data-model="batchKg"]');
+    if (batchInput) batchInput.value = profile.batchKg;
+    renderMetrics(profile);
+    persist();
+  }
+
+  const ingredientIndex = event.target.dataset.ingredient;
+  const key = event.target.dataset.key;
+  if (ingredientIndex !== undefined && key) {
+    profile.ingredients[ingredientIndex][key] = key === "name" ? event.target.value : Math.max(0, toNumber(event.target.value));
+    renderMetrics(profile);
+    persist();
+  }
+
+  if (event.target.id === "scenarioPrice") {
+    renderMetrics(profile);
+  }
+});
+
+document.addEventListener("click", (event) => {
+  const profile = activeProfile();
+  if (event.target.id === "addIngredient") {
+    profile.ingredients.push({ name: "New ingredient", percent: 0, rate: 0 });
+    render();
+  }
+
+  if (event.target.dataset.remove !== undefined) {
+    if (profile.ingredients.length <= 1) {
+      showToast("Keep at least one ingredient");
+      return;
+    }
+    profile.ingredients.splice(Number(event.target.dataset.remove), 1);
+    render();
+  }
+
+  if (event.target.id === "saveProfile") saveNamedProfile();
+  if (event.target.id === "deleteProfile") deleteCurrentProfile();
+  if (event.target.id === "toggleSidebar") {
+    state.sidebarCollapsed = !state.sidebarCollapsed;
+    render();
+    showToast(state.sidebarCollapsed ? "Sidebar hidden" : "Sidebar shown");
+  }
+  if (event.target.id === "loadSample") {
+    state.profiles.Sample = structuredClone(defaultProfile);
+    state.profiles.Sample.name = "Sample";
+    state.activeProfile = "Sample";
+    $("#scenarioPrice").value = "";
+    render();
+    showToast("Sample loaded");
+  }
+  if (event.target.id === "resetApp") {
+    state = {
+      activeProfile: "Default",
+      profiles: { Default: structuredClone(defaultProfile) },
+      theme: state.theme,
+      sidebarCollapsed: state.sidebarCollapsed,
+    };
+    $("#scenarioPrice").value = "";
+    render();
+    showToast("Reset complete");
+  }
+  if (event.target.id === "exportCsv") exportCsv();
+  if (event.target.id === "exportPdf") printPdf();
+  if (event.target.id === "shareSummary") shareSummary().catch(() => showToast("Unable to share"));
+});
+
+$("#profileSelect").addEventListener("change", (event) => {
+  state.activeProfile = event.target.value;
+  $("#scenarioPrice").value = "";
+  render();
+});
+
+$("#themeToggle").addEventListener("change", (event) => {
+  state.theme = event.target.checked ? "light" : "dark";
+  render();
+});
+
+render();
+
+    </script>
+  </body>
 </html>
