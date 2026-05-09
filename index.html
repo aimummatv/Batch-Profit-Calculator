@@ -319,6 +319,9 @@ select:focus {
 .summary-grid article,
 .extra-grid article,
 .scenario-output {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -336,6 +339,23 @@ select:focus {
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metric-sub {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .metric-strip strong,
@@ -346,6 +366,8 @@ select:focus {
 }
 
 .metric-editable input {
+  display: block;
+  width: 100%;
   height: 32px;
   padding: 0;
   border: 0;
@@ -353,8 +375,9 @@ select:focus {
   color: var(--text);
   font-size: 24px;
   font-weight: 900;
-  text-align: center;
+  text-align: left;
   box-shadow: none;
+  line-height: 1;
 }
 
 .panel {
@@ -612,7 +635,10 @@ th:nth-child(5) {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .metric-strip,
+  .metric-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .input-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -631,8 +657,14 @@ th:nth-child(5) {
   }
 
   .top-actions,
-  .side-nav,
-  .metric-strip,
+  .side-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .input-grid,
   .summary-grid,
   .extra-grid,
@@ -734,8 +766,9 @@ th:nth-child(5) {
             <strong id="profitPerPack">₹0.00</strong>
           </article>
           <article>
-            <span>Margin <span id="marginTargetLabel" style="font-weight:400;text-transform:none;letter-spacing:0"></span></span>
+            <span>Margin</span>
             <strong id="margin">0%</strong>
+            <span id="marginTargetLabel" class="metric-sub"></span>
           </article>
           <article class="metric-editable">
             <span>Packs</span>
@@ -1165,7 +1198,7 @@ function renderMetrics(profile) {
   $("#profitPerPack").textContent = money(result.profitPerPack, 2);
   $("#margin").textContent = `${number(result.margin, 1)}%`;
   const marginLbl = $("#marginTargetLabel");
-  if (marginLbl) marginLbl.textContent = result.targetMargin > 0 ? `(target ${number(result.targetMargin, 1)}%)` : "";
+  if (marginLbl) marginLbl.textContent = result.targetMargin > 0 ? `Target: ${number(result.targetMargin, 1)}%` : "";
   $("#rawCostTop").textContent = currency.format(result.rawMaterial);
   $("#totalCost").textContent = currency.format(result.totalCost);
   $("#effectiveBatch").textContent = `${number(result.effectiveBatchKg, 2)} kg`;
